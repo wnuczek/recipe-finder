@@ -3,10 +3,11 @@
 ## High-Signal Rules For Agents
 
 - Treat `app/` as source of truth for active routes and screens.
+- Keep files under 200 lines; split components at their first logical boundary (e.g. a separate <Feature>Card.tsx when a component exceeds that threshold)
 - Do not edit `.scaffold` files/directories unless the user explicitly asks.
 - Keep imports alias-first (`@/...`) using the path mapping in `tsconfig.json`.
 - Preserve Expo Router file-based routing conventions (route files and `_layout.tsx` hierarchy).
-- Run npm run lint after any change to app//_.tsx, components//_.tsx, route wiring, imports, or shared component props
+- Run npm run lint after any change to `app/**/*.tsx`, `components/**/*.tsx`, route wiring, imports, or shared component props
 - If a task needs tests, note that no test runner is configured yet; propose one before adding broad test suites.
 
 ## Known Pitfalls
@@ -17,13 +18,7 @@
 
 ## Quick Commands
 
-- Install deps: `npm install`
-- Start dev server: `npm run start`
-- Open on iOS: `npm run ios`
-- Open on Android: `npm run android`
-- Open web preview: `npm run web`
-- Lint: `npm run lint`
-- Reset scaffold: `npm run reset-project` (interactive, destructive/move operation)
+@package.json
 
 ## Architecture Map
 
@@ -40,23 +35,9 @@
 - Utility scripts:
   - `scripts/reset-project.js` can move/delete starter directories and recreate `app/`.
 
-## Project Snapshot
-
-- App type: Expo React Native mobile app (Expo Router).
-- Language: TypeScript with strict mode enabled.
-- Package manager: npm.
-- Current state: scaffolded starter with `.scaffold` reference files still present.
-
 ## Project-Specific Context
 
 - Product intent is documented in `context/foundation/prd.md` (RecipeFinder MVP).
 - Stack rationale and constraints are in `context/foundation/tech-stack.md`.
 - Bootstrap/audit notes are in `context/changes/bootstrap-verification/verification.md`.
-
-## Link-First Policy
-
-- Prefer linking to existing docs over duplicating them in instructions:
-  - `README.md`
-  - `context/foundation/prd.md`
-  - `context/foundation/tech-stack.md`
-  - `context/changes/bootstrap-verification/verification.md`
+- When adding new context, link via `@`-reference rather than duplicating prose inline.
