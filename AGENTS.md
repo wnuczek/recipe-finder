@@ -1,55 +1,62 @@
-<!-- BEGIN @przeprogramowani/10x-cli -->
+# Repository Guidelines
 
-## 10xDevs AI Toolkit — Module 1, Lesson 1
+## High-Signal Rules For Agents
 
-Bootstrap a greenfield project end-to-end with the **shaping chain**:
+- Treat `app/` as source of truth for active routes and screens.
+- Do not edit `.scaffold` files/directories unless the user explicitly asks.
+- Keep imports alias-first (`@/...`) using the path mapping in `tsconfig.json`.
+- Preserve Expo Router file-based routing conventions (route files and `_layout.tsx` hierarchy).
+- Run npm run lint after any change to app//_.tsx, components//_.tsx, route wiring, imports, or shared component props
+- If a task needs tests, note that no test runner is configured yet; propose one before adding broad test suites.
 
-```
-/10x-init  →  /10x-shape  →  /10x-prd  →  (10x-tech-stack-selector)  →  (bootstrapper)
-```
+## Known Pitfalls
 
-The first three skills ship in this lesson; the last two are the next links in the chain.
+- `npm run reset-project` is interactive and can remove or move directories; do not run it unless requested.
+- This repo contains both active files and scaffold copies; verify path targets before editing.
+- There is no backend in this repo yet; avoid inventing server contracts unless asked.
 
-### Task Router — Where to start
+## Quick Commands
 
-| Skill | Use it when |
-| --- | --- |
-| **Project setup** | |
-| `/10x-init` | The project directory is fresh. Scaffolds `context/foundation/lessons.md` and `docs/reference/contract-surfaces.md` so the rest of the workflow has somewhere to write. Run this once per project. |
-| **Discovery** | |
-| `/10x-shape` | You have an idea and need to turn it into structured shape-notes BEFORE writing a PRD. Greenfield only. Walks vision → persona/access → MVP → FRs (with Socratic challenge) → business logic & data → stack-openness sketch. Surfaces empty-CRUD and MVP-too-big anti-patterns by name. Output: `context/foundation/shape-notes.md` with a resumable `checkpoint:` block. |
-| **Document generation** | |
-| `/10x-prd` | You have shape-notes (or raw notes) and want a schema-conformant `context/foundation/prd.md`. Generates against the locked schema, routes every gap verbatim into `## Open Questions`, and refuses to invent domain decisions. On collision, prompts overwrite vs. versioned save (`prd-vN.md`). |
+- Install deps: `npm install`
+- Start dev server: `npm run start`
+- Open on iOS: `npm run ios`
+- Open on Android: `npm run android`
+- Open web preview: `npm run web`
+- Lint: `npm run lint`
+- Reset scaffold: `npm run reset-project` (interactive, destructive/move operation)
 
-### How the chain hands off
+## Architecture Map
 
-- `/10x-init` produces the workflow v2 scaffold (`context/foundation/`, `lessons.md`, `contract-surfaces.md`). `/10x-shape` requires this and will offer to delegate to `/10x-init` if it's missing.
-- `/10x-shape` writes `context/foundation/shape-notes.md` with frontmatter `checkpoint:` (current_phase, phases_completed, frs_drafted, quality_check_status). On re-entry, it resumes from the next unfinished phase.
-- `/10x-prd` reads `shape-notes.md` (default) or any path you pass, scores the input on a 4-signal heuristic, warns on thin input, and writes `context/foundation/prd.md` against the schema at `skills/10x-shape/references/prd-schema.md` (frontmatter aligned 1:1 with 10x-tech-stack-selector's Q1–Q7).
+- Routing and navigation:
+  - `app/_layout.tsx` root stack and theme provider.
+  - `app/(tabs)/_layout.tsx` tab navigator setup.
+  - `app/(tabs)/index.tsx` and `app/(tabs)/explore.tsx` current screens.
+  - `app/modal.tsx` modal route.
+- Reusable UI primitives:
+  - `components/` and `components/ui/`.
+- Theme and styling:
+  - `constants/theme.ts` for colors/fonts.
+  - `hooks/use-color-scheme.ts` and `hooks/use-theme-color.ts` for theme-aware behavior.
+- Utility scripts:
+  - `scripts/reset-project.js` can move/delete starter directories and recreate `app/`.
 
-### What the PRD captures (and what it does NOT)
+## Project Snapshot
 
-- **Captured**: vision, persona, success criteria, user stories (Given/When/Then), FRs (FR-NNN), NFRs, business logic (one-sentence rule first), data model, access control, durable implementation decisions, testing strategy, deployment & CI/CD strategy, non-goals, open questions.
-- **NOT captured (deliberate)**: framework choices, database choices, file paths, deployment platform. Stack openness is binding — only `product_type` and `tech_preferences.language_family` capture stack-shaped intent. Frameworks are 10x-tech-stack-selector's job.
+- App type: Expo React Native mobile app (Expo Router).
+- Language: TypeScript with strict mode enabled.
+- Package manager: npm.
+- Current state: scaffolded starter with `.scaffold` reference files still present.
 
-### Anti-patterns surfaced during shaping
+## Project-Specific Context
 
-- **Empty-CRUD**: business logic that reduces to "users add and remove records" with no domain rule. `/10x-shape` names it explicitly and prompts for a real rule shape (recommendation, prioritization, classification, validation, scoring, workflow, calculation).
-- **MVP-too-big**: first-flow estimate exceeds ~1 week of after-hours work, or > 4 distinct user actions before user-visible value, or requires multiple integrations before payoff. Skill names the expensive pieces and offers concrete scope-down moves.
+- Product intent is documented in `context/foundation/prd.md` (RecipeFinder MVP).
+- Stack rationale and constraints are in `context/foundation/tech-stack.md`.
+- Bootstrap/audit notes are in `context/changes/bootstrap-verification/verification.md`.
 
-Both are **soft gates**: they warn but allow override. Overrides are recorded in the checkpoint and surfaced in the PRD's `## Open Questions`.
+## Link-First Policy
 
-### Foundation paths used by this lesson
-
-- `context/foundation/shape-notes.md` — `/10x-shape` output
-- `context/foundation/prd.md` (or `prd-vN.md`) — `/10x-prd` output
-- `context/foundation/lessons.md` — recurring rules & pitfalls (scaffolded by `/10x-init`)
-- `docs/reference/contract-surfaces.md` — load-bearing names registry (scaffolded by `/10x-init`)
-
-### Universal language
-
-The shipped skills carry no 10xDevs / cohort / certification references. The mechanics (Socratic challenge, gray-area discovery, recommended-answer fatigue mitigation, soft quality gate) are universal indicators of a well-scoped greenfield project.
-
-Skills must not write to `context/archive/`. Archived changes are immutable; if a resolved target path starts with `context/archive/`, abort with: "This change is archived. Open a new change with `/10x-new` instead."
-
-<!-- END @przeprogramowani/10x-cli -->
+- Prefer linking to existing docs over duplicating them in instructions:
+  - `README.md`
+  - `context/foundation/prd.md`
+  - `context/foundation/tech-stack.md`
+  - `context/changes/bootstrap-verification/verification.md`

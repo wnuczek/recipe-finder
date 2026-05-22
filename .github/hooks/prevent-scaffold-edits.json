@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node scripts/hooks/prevent-scaffold-edits.mjs",
+        "timeout": 10
+      }
+    ]
+  }
+}
