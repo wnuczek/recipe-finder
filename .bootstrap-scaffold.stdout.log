@@ -1,0 +1,25 @@
+Creating .bootstrap-scaffold using the default template.
+
+> npm install
+
+added 911 packages, and audited 912 packages in 17s
+
+166 packages are looking for funding
+  run `npm fund` for details
+
+4 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+✅ Your project is ready!
+
+To run your project, navigate to the directory and run one of the following npm commands.
+
+- cd .bootstrap-scaffold
+- npm run android
+- npm run ios
+- npm run web
+[?25l[2K[1G[36m?[39m [1mYou are creating a project inside of an existing Git repository. Skip initializing a new git repository?[22m [90m›[39m [90m(Y/n)[39m

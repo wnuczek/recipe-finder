@@ -1,0 +1,15 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.sortMembers": "explicit"
+  },
+  "yaml.schemas": {
+    "file:///Users/wnuczek/.vscode/extensions/atlassian.atlascode-4.0.17/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+    "file:///Users/wnuczek/.vscode/extensions/continue.continue-1.2.22-darwin-arm64/config-yaml-schema.json": [
+      ".continue/**/*.yaml",
+      "file:///Users/wnuczek/.continue/config.yaml"
+    ]
+  },
+  "chat.agent.enabled": true
+}
