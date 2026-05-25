@@ -1,17 +1,22 @@
 {
   "expo": {
-    "name": ".bootstrap-scaffold",
-    "slug": ".bootstrap-scaffold",
+    "name": "RecipeFinder",
+    "slug": "recipe-finder",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "bootstrapscaffold",
+    "scheme": "recipefinder",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wnuczek.recipefinder",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.wnuczek.recipefinder",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -43,6 +48,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "50d22684-9274-4407-9dd0-c1b5f624ed52"
+      }
+    },
+    "owner": "wnuczek"
   }
 }
