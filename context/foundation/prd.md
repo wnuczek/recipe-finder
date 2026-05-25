@@ -4,7 +4,7 @@ version: 1
 status: draft
 created: 2026-05-20
 context_type: greenfield
-product_type: mobile
+product_type: web
 target_scale:
   users: small
   qps: low
@@ -95,10 +95,16 @@ Moment kontaktu uzytkownika z regula: ekran wynikow wyszukiwania i ekran szczego
 
 Local profile na MVP. Dane profilu i preferencje sa trzymane lokalnie. Brak logowania kontem i brak separacji rol; model plaski (jeden typ uzytkownika).
 
+## Delivery Decisions (2026-05-25)
+
+- MVP deployment target: web-only on Cloudflare.
+- Backend scope in MVP: conditional. Backend is introduced only if local-flow validation misses NFR guardrails.
+
 ## Non-Goals
 
 - No barcode scanner in MVP. Rationale: not core to first end-to-end value and adds integration risk.
 - No multi-source scraping in MVP. Rationale: one stable source is enough to validate product loop.
+- No native app distribution hardening in MVP. Rationale: current MVP release path is web-only on Cloudflare.
 
 ## Open Questions
 
