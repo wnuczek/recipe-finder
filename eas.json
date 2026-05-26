@@ -13,12 +13,18 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-api.design-054.workers.dev"
+      },
       "ios": {
         "simulator": false
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-api.design-054.workers.dev"
+      }
     }
   },
   "submit": {
