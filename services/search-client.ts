@@ -48,8 +48,13 @@ type SearchClientOptions = {
   fetchImpl?: typeof fetch;
 };
 
+const productionApiBaseUrl = "https://recipe-finder-api.design-054.workers.dev";
+
 const defaultApiBaseUrl =
-  process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8787";
+  process.env.EXPO_PUBLIC_API_BASE_URL ??
+  (process.env.NODE_ENV === "production"
+    ? productionApiBaseUrl
+    : "http://localhost:8787");
 
 const rankedRecipeSchema = z.object({
   id: z.string(),

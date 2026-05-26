@@ -1,0 +1,67 @@
+name: Deploy To Cloudflare On Tag
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cloudflare-deploy-${{ github.ref }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tag commit belongs to master
+        run: |
+          git fetch origin master
+          if git merge-base --is-ancestor "$GITHUB_SHA" origin/master; then
+            echo "Tag commit is on master history."
+            echo "SHOULD_DEPLOY=true" >> "$GITHUB_ENV"
+          else
+            echo "Tag commit is not on master. Deployment will be skipped."
+            echo "SHOULD_DEPLOY=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Setup Node.js
+        if: env.SHOULD_DEPLOY == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        if: env.SHOULD_DEPLOY == 'true'
+        run: npm ci
+
+      - name: Build web bundle
+        if: env.SHOULD_DEPLOY == 'true'
+        run: npx expo export --platform web
+
+      - name: Validate Cloudflare Pages project variable
+        if: env.SHOULD_DEPLOY == 'true'
+        env:
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          if [ -z "$CLOUDFLARE_PAGES_PROJECT" ]; then
+            echo "Missing repo variable: CLOUDFLARE_PAGES_PROJECT"
+            echo "Set Settings -> Secrets and variables -> Actions -> Variables"
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        if: env.SHOULD_DEPLOY == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }}
