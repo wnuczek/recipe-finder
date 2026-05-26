@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { RECIPES } from "./recipes.fixture";
 import { rankRecipes } from "./rank-recipes";
+import { RECIPES } from "./recipes.fixture";
 
 describe("rankRecipes", () => {
   it("sorts by match count desc, favorites desc, then title asc", () => {
@@ -26,5 +26,14 @@ describe("rankRecipes", () => {
     const results = rankRecipes(["imbir", "chilli"], RECIPES);
 
     expect(results.length).toBe(0);
+  });
+
+  it("keeps zero-match recipes when includeZeroMatches is enabled", () => {
+    const results = rankRecipes(["imbir", "chilli"], RECIPES, {
+      includeZeroMatches: true,
+    });
+
+    expect(results.length).toBe(RECIPES.length);
+    expect(results.every((result) => result.matchCount === 0)).toBe(true);
   });
 });

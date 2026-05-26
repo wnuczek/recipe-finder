@@ -13,6 +13,7 @@ export type RankedRecipe = Recipe & {
 
 export type SearchRequest = {
   ingredients: string[];
+  includeZeroMatches?: boolean;
 };
 
 export type SearchResponse = {

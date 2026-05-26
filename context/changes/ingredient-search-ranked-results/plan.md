@@ -364,16 +364,16 @@ This plan introduces a new persisted storage layer. Rollout order is mandatory: 
 
 #### Automated
 
-- [ ] 2.1 Search route tests pass against repository-backed flow
-- [ ] 2.2 Ranking tests confirm tie-break determinism remains unchanged
-- [ ] 2.3 Invalid payload still returns clear 4xx contract
-- [ ] 2.4 Server test/typecheck/lint pipeline remains green
+- [x] 2.1 Search route tests pass against repository-backed flow
+- [x] 2.2 Ranking tests confirm tie-break determinism remains unchanged
+- [x] 2.3 Invalid payload still returns clear 4xx contract
+- [x] 2.4 Server test/typecheck/lint pipeline remains green
 
 #### Manual
 
-- [ ] 2.5 API responds with ranked persisted data for representative ingredient sets
-- [ ] 2.6 Zero-match default behavior returns empty list and accurate metadata
-- [ ] 2.7 Timing metadata is visible and suitable for p95 sampling
+- [x] 2.5 API responds with ranked persisted data for representative ingredient sets
+- [x] 2.6 Zero-match default behavior returns empty list and accurate metadata
+- [x] 2.7 Timing metadata is visible and suitable for p95 sampling
 
 ### Phase 3: Frontend Search UX Integration
 
