@@ -1,0 +1,6 @@
+name = "recipe-finder-api"
+main = "server/src/worker.ts"
+compatibility_date = "2026-05-26"
+
+[observability]
+enabled = true
