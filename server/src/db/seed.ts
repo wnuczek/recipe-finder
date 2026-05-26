@@ -1,4 +1,4 @@
-import { inArray, sql } from "drizzle-orm";
+import { inArray, notInArray, sql } from "drizzle-orm";
 
 import { RECIPES } from "../search/recipes.fixture";
 import { db, sqlClient } from "./client";
@@ -6,6 +6,16 @@ import { recipeIngredientsTable, recipesTable } from "./schema";
 
 async function seed() {
   await db.transaction(async (tx) => {
+    const recipeIds = RECIPES.map((recipe) => recipe.id);
+
+    if (recipeIds.length > 0) {
+      await tx
+        .delete(recipesTable)
+        .where(notInArray(recipesTable.id, recipeIds));
+    } else {
+      await tx.delete(recipesTable);
+    }
+
     await tx
       .insert(recipesTable)
       .values(
@@ -22,8 +32,6 @@ async function seed() {
           favoritesCount: sql`excluded.favorites_count`,
         },
       });
-
-    const recipeIds = RECIPES.map((recipe) => recipe.id);
 
     await tx
       .delete(recipeIngredientsTable)

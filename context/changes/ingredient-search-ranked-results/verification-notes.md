@@ -63,3 +63,9 @@ Interpretation:
 ```bash
 node -e 'const samples=20;const url="http://localhost:8787/api/recipes/search";const body=JSON.stringify({ingredients:["ryż","pomidor"]});(async()=>{const vals=[];for(let i=0;i<samples;i++){const res=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body});const json=await res.json();vals.push(Number(json?.metadata?.durationMs ?? NaN));}const sorted=[...vals].sort((a,b)=>a-b);const idx=Math.ceil(0.95*sorted.length)-1;const p95=sorted[Math.max(0,idx)];console.log({samples,p95,vals});})()'
 ```
+
+## Manual Sign-Off (2026-05-26)
+
+- Reviewer: project maintainer (human)
+- Scope approved: Phase 1.5-1.7, 2.5-2.7, 3.5-3.7, 4.5-4.7 manual checkpoints
+- Result: Approved for implementation review completion

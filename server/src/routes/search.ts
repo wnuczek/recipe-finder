@@ -14,23 +14,33 @@ const normalizedIngredientSchema = z
   .min(1)
   .max(MAX_INGREDIENT_LENGTH);
 
-const searchRequestSchema = z.object({
-  ingredients: z
-    .array(normalizedIngredientSchema)
-    .min(1)
-    .max(MAX_INGREDIENTS)
-    .transform((items) => [...new Set(items)]),
-  includeZeroMatches: z.boolean().optional(),
-});
+const searchRequestSchema = z
+  .object({
+    ingredients: z
+      .array(normalizedIngredientSchema)
+      .min(1)
+      .transform((items) => [...new Set(items)])
+      .refine((items) => items.length <= MAX_INGREDIENTS, {
+        message: "Too many ingredients",
+      }),
+    includeZeroMatches: z.boolean().optional(),
+  })
+  .strict();
 
 type SearchRouteDependencies = {
-  listRecipesForSearch: () => Promise<Recipe[]>;
+  listRecipesForSearch: (options?: {
+    selectedIngredients?: string[];
+    includeZeroMatches?: boolean;
+  }) => Promise<Recipe[]>;
   listIngredients: () => Promise<string[]>;
 };
 
-async function loadRecipesFromRepository() {
+async function loadRecipesFromRepository(options?: {
+  selectedIngredients?: string[];
+  includeZeroMatches?: boolean;
+}) {
   const repository = await import("../db/repositories/recipe-repository.js");
-  return repository.listRecipesForSearch();
+  return repository.listRecipesForSearch(options);
 }
 
 async function loadIngredientsFromRepository() {
@@ -58,7 +68,10 @@ export function createSearchRoute(
       dependencies.listRecipesForSearch ?? loadRecipesFromRepository;
 
     try {
-      const recipes = await readRecipes();
+      const recipes = await readRecipes({
+        selectedIngredients: input.ingredients,
+        includeZeroMatches: input.includeZeroMatches,
+      });
 
       const results = rankRecipes(input.ingredients, recipes, {
         includeZeroMatches: input.includeZeroMatches,

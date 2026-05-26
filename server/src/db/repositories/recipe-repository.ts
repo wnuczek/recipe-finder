@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 
 import type { Recipe } from "../../search/types";
 import { db } from "../client";
@@ -11,8 +11,39 @@ type RecipeResultRow = {
   ingredient: string | null;
 };
 
-export async function listRecipesForSearch(): Promise<Recipe[]> {
-  const rows = await db
+type ListRecipesForSearchOptions = {
+  selectedIngredients?: string[];
+  includeZeroMatches?: boolean;
+};
+
+function normalizeSelectedIngredients(values: string[]) {
+  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+}
+
+export async function listRecipesForSearch(
+  options: ListRecipesForSearchOptions = {},
+): Promise<Recipe[]> {
+  const includeZeroMatches = options.includeZeroMatches ?? false;
+  const selectedIngredients = normalizeSelectedIngredients(
+    options.selectedIngredients ?? [],
+  );
+
+  let candidateRecipeIds: string[] | null = null;
+
+  if (!includeZeroMatches && selectedIngredients.length > 0) {
+    const candidateRows = await db
+      .selectDistinct({ id: recipeIngredientsTable.recipeId })
+      .from(recipeIngredientsTable)
+      .where(inArray(recipeIngredientsTable.ingredient, selectedIngredients));
+
+    candidateRecipeIds = candidateRows.map((row) => row.id);
+
+    if (candidateRecipeIds.length === 0) {
+      return [];
+    }
+  }
+
+  const baseQuery = db
     .select({
       id: recipesTable.id,
       title: recipesTable.title,
@@ -23,8 +54,20 @@ export async function listRecipesForSearch(): Promise<Recipe[]> {
     .leftJoin(
       recipeIngredientsTable,
       eq(recipeIngredientsTable.recipeId, recipesTable.id),
-    )
-    .orderBy(asc(recipesTable.title), asc(recipeIngredientsTable.ingredient));
+    );
+
+  const rows =
+    candidateRecipeIds === null
+      ? await baseQuery.orderBy(
+          asc(recipesTable.title),
+          asc(recipeIngredientsTable.ingredient),
+        )
+      : await baseQuery
+          .where(inArray(recipesTable.id, candidateRecipeIds))
+          .orderBy(
+            asc(recipesTable.title),
+            asc(recipeIngredientsTable.ingredient),
+          );
 
   return mapRowsToRecipes(rows);
 }

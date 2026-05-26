@@ -348,6 +348,7 @@ During implementation, repository-level AI tooling docs were updated in parallel
 - `.github/copilot-instructions.md`
 - `.github/.10x-cli-manifest.json`
 - `.github/skills/10x-impl-review/SKILL.md`
+- `server/src/routes/search.ts` (accepted GET `/api/recipes/search` compatibility endpoint)
 
 These are non-product support changes and are explicitly accepted as out-of-slice maintenance done in the same delivery window.
 

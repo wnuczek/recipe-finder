@@ -52,6 +52,17 @@ curl -sS -X POST http://localhost:8787/api/recipes/search \
   -d '{"ingredients":["ryż","pomidor"]}'
 ```
 
+1. Browser/query-string compatibility search (accepted secondary contract):
+
+```bash
+curl -sS 'http://localhost:8787/api/recipes/search?ingredients=ryż,pomidor&includeZeroMatches=true'
+```
+
+Search contract notes:
+
+- Primary contract: `POST /api/recipes/search` with JSON body.
+- Compatibility contract: `GET /api/recipes/search` with `ingredients` query values.
+
 1. Verify app behavior in browser:
 
 - Search button is disabled with no selected ingredient
