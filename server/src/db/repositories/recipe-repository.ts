@@ -29,6 +29,17 @@ export async function listRecipesForSearch(): Promise<Recipe[]> {
   return mapRowsToRecipes(rows);
 }
 
+export async function listIngredients(): Promise<string[]> {
+  const rows = await db
+    .selectDistinct({ ingredient: recipeIngredientsTable.ingredient })
+    .from(recipeIngredientsTable)
+    .orderBy(asc(recipeIngredientsTable.ingredient));
+
+  return rows
+    .map((row) => row.ingredient.trim())
+    .filter((value) => value.length > 0);
+}
+
 function mapRowsToRecipes(rows: RecipeResultRow[]): Recipe[] {
   const recipesById = new Map<string, Recipe>();
 

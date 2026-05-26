@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   Pressable,
@@ -10,6 +10,7 @@ import {
 
 import { INGREDIENTS } from "@/constants/ingredients";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { fetchIngredients } from "@/services/search-client";
 
 type IngredientInputProps = {
   selected: string[];
@@ -18,7 +19,32 @@ type IngredientInputProps = {
 
 export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
   const [query, setQuery] = useState("");
+  const [availableIngredients, setAvailableIngredients] =
+    useState<string[]>(INGREDIENTS);
   const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    let canceled = false;
+
+    async function loadIngredients() {
+      try {
+        const ingredients = await fetchIngredients();
+        if (!canceled && ingredients.length > 0) {
+          setAvailableIngredients(ingredients);
+        }
+      } catch {
+        if (!canceled) {
+          setAvailableIngredients(INGREDIENTS);
+        }
+      }
+    }
+
+    void loadIngredients();
+
+    return () => {
+      canceled = true;
+    };
+  }, []);
 
   const text = useThemeColor({}, "text");
   const tint = useThemeColor({}, "tint");
@@ -34,11 +60,13 @@ export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
 
   const suggestions =
     query.trim().length > 0
-      ? INGREDIENTS.filter(
-          (ing) =>
-            ing.toLowerCase().includes(query.toLowerCase()) &&
-            !selected.includes(ing),
-        ).slice(0, 6)
+      ? availableIngredients
+          .filter(
+            (ing) =>
+              ing.toLowerCase().includes(query.toLowerCase()) &&
+              !selected.includes(ing),
+          )
+          .slice(0, 6)
       : [];
 
   function handleSelect(ingredient: string) {

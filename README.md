@@ -1,50 +1,86 @@
-# Welcome to your Expo app 👋
+# Recipe Finder
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo + Hono + Postgres MVP for ranked ingredient-based recipe search.
 
-## Get started
+## Prerequisites
 
-1. Install dependencies
+- Node.js 20+
+- A Postgres database (local Supabase or hosted)
+- `.env` file in project root with `DATABASE_URL`
 
-   ```bash
-   npm install
-   ```
+## Local Setup
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. Install dependencies:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+1. Prepare database schema and seed data:
 
-## Learn more
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+1. Start API server:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run server:dev
+```
 
-## Join the community
+1. In another terminal, start Expo app:
 
-Join our community of developers creating universal apps.
+```bash
+npm run web
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## End-to-End Search Verification
+
+1. Confirm ingredients endpoint works:
+
+```bash
+curl -sS http://localhost:8787/api/ingredients
+```
+
+1. Run ranked search:
+
+```bash
+curl -sS -X POST http://localhost:8787/api/recipes/search \
+  -H 'content-type: application/json' \
+  -d '{"ingredients":["ryż","pomidor"]}'
+```
+
+1. Verify app behavior in browser:
+
+- Search button is disabled with no selected ingredient
+- Loading, success, empty, and error/retry states render correctly
+- Retry preserves selected ingredient chips
+
+## Validation Commands
+
+- Full validation:
+
+```bash
+npm run validate
+```
+
+- Backend tests only:
+
+```bash
+npm run server:test
+```
+
+- Frontend/service tests only:
+
+```bash
+npm run client:test
+```
+
+- Typecheck and lint:
+
+```bash
+npm run typecheck
+npm run lint
+```

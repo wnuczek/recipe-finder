@@ -1,5 +1,20 @@
+import { IngredientInput } from "@/components/ingredient-input";
+import { SearchResultsSection } from "@/components/search-results-section";
+import { SelectedIngredientsSection } from "@/components/selected-ingredients-section";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import { SearchClientError, searchRecipes } from "@/services/search-client";
+import {
+  applyError,
+  applyLoading,
+  applySuccess,
+  createInitialSearchState,
+  getRetryIngredients,
+} from "@/services/search-state";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -7,16 +22,9 @@ import {
   Text,
   View,
 } from "react-native";
-
-import { IngredientChip } from "@/components/ingredient-chip";
-import { IngredientInput } from "@/components/ingredient-input";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useThemeColor } from "@/hooks/use-theme-color";
-
 export default function HomeScreen() {
   const [ingredients, setIngredients] = useState<string[]>([]);
-
+  const [searchState, setSearchState] = useState(createInitialSearchState());
   const tint = useThemeColor({}, "tint");
   const icon = useThemeColor({}, "icon");
 
@@ -28,6 +36,40 @@ export default function HomeScreen() {
 
   function removeIngredient(ingredient: string) {
     setIngredients((prev) => prev.filter((i) => i !== ingredient));
+  }
+
+  async function runSearch(requestIngredients: string[]) {
+    if (requestIngredients.length === 0) {
+      return;
+    }
+    setSearchState((prev) => applyLoading(prev));
+    try {
+      const response = await searchRecipes(requestIngredients);
+      setSearchState((prev) =>
+        applySuccess(prev, requestIngredients, response.results),
+      );
+    } catch (error) {
+      if (error instanceof SearchClientError) {
+        setSearchState((prev) =>
+          applyError(prev, requestIngredients, error.message),
+        );
+        return;
+      }
+      setSearchState((prev) =>
+        applyError(
+          prev,
+          requestIngredients,
+          "Nie udało się pobrać wyników wyszukiwania.",
+        ),
+      );
+    }
+  }
+
+  function handleRetry() {
+    const retryIngredients = getRetryIngredients(searchState, ingredients);
+    if (retryIngredients.length > 0) {
+      void runSearch(retryIngredients);
+    }
   }
 
   return (
@@ -51,45 +93,45 @@ export default function HomeScreen() {
             <IngredientInput selected={ingredients} onAdd={addIngredient} />
           </View>
 
-          {ingredients.length > 0 && (
-            <View style={styles.chipsSection}>
-              <View style={styles.chipsHeader}>
-                <ThemedText type="defaultSemiBold">
-                  Wybrane składniki
-                </ThemedText>
-                <Pressable onPress={() => setIngredients([])}>
-                  <Text style={[styles.clearAll, { color: icon }]}>
-                    Wyczyść
-                  </Text>
-                </Pressable>
-              </View>
-              <View style={styles.chips}>
-                {ingredients.map((ing) => (
-                  <IngredientChip
-                    key={ing}
-                    label={ing}
-                    onRemove={() => removeIngredient(ing)}
-                  />
-                ))}
-              </View>
-            </View>
-          )}
+          <SelectedIngredientsSection
+            ingredients={ingredients}
+            onClear={() => setIngredients([])}
+            onRemove={removeIngredient}
+          />
 
           <Pressable
             style={[
               styles.searchButton,
               { backgroundColor: tint },
-              ingredients.length === 0 && styles.searchButtonDisabled,
+              (ingredients.length === 0 || searchState.status === "loading") &&
+                styles.searchButtonDisabled,
             ]}
-            disabled={ingredients.length === 0}
+            disabled={
+              ingredients.length === 0 || searchState.status === "loading"
+            }
+            onPress={() => void runSearch(ingredients)}
             accessibilityRole="button"
             accessibilityLabel="Szukaj przepisów"
-            accessibilityState={{ disabled: ingredients.length === 0 }}
+            accessibilityState={{
+              disabled:
+                ingredients.length === 0 || searchState.status === "loading",
+            }}
           >
-            <Text style={styles.searchButtonText}>Szukaj przepisów</Text>
+            {searchState.status === "loading" ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text style={styles.searchButtonText}>Szukaj przepisów</Text>
+            )}
           </Pressable>
 
-          {ingredients.length === 0 && (
+          <SearchResultsSection
+            status={searchState.status}
+            results={searchState.results}
+            errorMessage={searchState.errorMessage}
+            onRetry={handleRetry}
+          />
+
+          {searchState.status === "idle" && ingredients.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🥗</Text>
               <ThemedText style={[styles.emptyText, { color: icon }]}>
@@ -127,22 +169,6 @@ const styles = StyleSheet.create({
   inputSection: {
     marginBottom: 20,
     zIndex: 10,
-  },
-  chipsSection: {
-    marginBottom: 24,
-  },
-  chipsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  chips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  clearAll: {
-    fontSize: 14,
   },
   searchButton: {
     borderRadius: 12,

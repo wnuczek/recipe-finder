@@ -14,6 +14,27 @@ describe("rankRecipes", () => {
     expect(tied[0].favoritesCount).toBe(95);
     expect(tied[1].favoritesCount).toBe(95);
     expect(tied[0].title.localeCompare(tied[1].title, "pl-PL")).toBeLessThan(0);
+
+    // Guard the favorites tie-break directly with controlled input.
+    const tieOnMatches = rankRecipes(
+      ["ryż"],
+      [
+        {
+          id: "a",
+          title: "A",
+          ingredients: ["ryż"],
+          favoritesCount: 10,
+        },
+        {
+          id: "b",
+          title: "B",
+          ingredients: ["ryż"],
+          favoritesCount: 90,
+        },
+      ],
+    );
+
+    expect(tieOnMatches.map((recipe) => recipe.id)).toEqual(["b", "a"]);
   });
 
   it("assigns rank positions in sorted order", () => {

@@ -31,6 +31,8 @@ function buildTestApp(recipes: Recipe[]) {
     "/api",
     createSearchRoute({
       listRecipesForSearch: async () => recipes,
+      listIngredients: async () =>
+        [...new Set(recipes.flatMap((recipe) => recipe.ingredients))].sort(),
     }),
   );
 
@@ -38,18 +40,34 @@ function buildTestApp(recipes: Recipe[]) {
 }
 
 describe("POST /api/recipes/search", () => {
-  it("returns 405 for GET requests", async () => {
+  it("supports GET search query for browser compatibility", async () => {
+    const app = buildTestApp(repositoryRecipes);
+
+    const response = await app.request(
+      "/api/recipes/search?ingredients=ryż&includeZeroMatches=true",
+      {
+        method: "GET",
+      },
+    );
+
+    expect(response.status).toBe(200);
+
+    const payload = await response.json();
+    expect(payload.query.ingredientCount).toBe(1);
+    expect(payload.query.includeZeroMatches).toBe(true);
+  });
+
+  it("returns 400 for invalid GET search query", async () => {
     const app = buildTestApp(repositoryRecipes);
 
     const response = await app.request("/api/recipes/search", {
       method: "GET",
     });
 
-    expect(response.status).toBe(405);
-    expect(response.headers.get("allow")).toBe("POST");
+    expect(response.status).toBe(400);
 
     const payload = await response.json();
-    expect(payload.error).toContain("Method not allowed");
+    expect(payload.error).toContain("Invalid query");
   });
 
   it("returns ranked recipes with metadata", async () => {
@@ -127,6 +145,9 @@ describe("POST /api/recipes/search", () => {
         listRecipesForSearch: async () => {
           throw new Error("db down");
         },
+        listIngredients: async () => {
+          throw new Error("db down");
+        },
       }),
     );
 
@@ -141,5 +162,18 @@ describe("POST /api/recipes/search", () => {
     expect(response.status).toBe(500);
     const payload = await response.json();
     expect(payload.error).toContain("Search failed");
+  });
+
+  it("returns ingredients list from repository", async () => {
+    const app = buildTestApp(repositoryRecipes);
+
+    const response = await app.request("/api/ingredients", {
+      method: "GET",
+    });
+
+    expect(response.status).toBe(200);
+
+    const payload = await response.json();
+    expect(payload.ingredients).toEqual(["curry", "pomidor", "ryż"]);
   });
 });

@@ -364,43 +364,43 @@ This plan introduces a new persisted storage layer. Rollout order is mandatory: 
 
 #### Automated
 
-- [x] 2.1 Search route tests pass against repository-backed flow
-- [x] 2.2 Ranking tests confirm tie-break determinism remains unchanged
-- [x] 2.3 Invalid payload still returns clear 4xx contract
-- [x] 2.4 Server test/typecheck/lint pipeline remains green
+- [x] 2.1 Search route tests pass against repository-backed flow — 27a2cb5
+- [x] 2.2 Ranking tests confirm tie-break determinism remains unchanged — 27a2cb5
+- [x] 2.3 Invalid payload still returns clear 4xx contract — 27a2cb5
+- [x] 2.4 Server test/typecheck/lint pipeline remains green — 27a2cb5
 
 #### Manual
 
-- [x] 2.5 API responds with ranked persisted data for representative ingredient sets
-- [x] 2.6 Zero-match default behavior returns empty list and accurate metadata
-- [x] 2.7 Timing metadata is visible and suitable for p95 sampling
+- [x] 2.5 API responds with ranked persisted data for representative ingredient sets — 27a2cb5
+- [x] 2.6 Zero-match default behavior returns empty list and accurate metadata — 27a2cb5
+- [x] 2.7 Timing metadata is visible and suitable for p95 sampling — 27a2cb5
 
 ### Phase 3: Frontend Search UX Integration
 
 #### Automated
 
-- [ ] 3.1 App/server typecheck passes across integration points
-- [ ] 3.2 Lint passes for updated app and component files
-- [ ] 3.3 API client contract assertions pass for success and failure mapping
-- [ ] 3.4 Targeted UI tests cover loading, success, empty, and error/retry states
+- [x] 3.1 App/server typecheck passes across integration points
+- [x] 3.2 Lint passes for updated app and component files
+- [x] 3.3 API client contract assertions pass for success and failure mapping
+- [x] 3.4 Targeted UI tests cover loading, success, empty, and error/retry states
 
 #### Manual
 
-- [ ] 3.5 Search button executes requests only when at least one ingredient is selected
-- [ ] 3.6 Inline retry recovers from simulated API failure without clearing selected chips
-- [ ] 3.7 No-results message appears for zero-match responses and disappears on successful subsequent query
+- [x] 3.5 Search button executes requests only when at least one ingredient is selected
+- [x] 3.6 Inline retry recovers from simulated API failure without clearing selected chips
+- [x] 3.7 No-results message appears for zero-match responses and disappears on successful subsequent query
 
 ### Phase 4: Verification, Performance Gate, and Runbook
 
 #### Automated
 
-- [ ] 4.1 Full validation command passes consistently
-- [ ] 4.2 Backend and frontend targeted tests pass in local run
-- [ ] 4.3 Typecheck and lint pass after all integrations
-- [ ] 4.4 Ranking contract tests still fail on intentional ordering mutation
+- [x] 4.1 Full validation command passes consistently
+- [x] 4.2 Backend and frontend targeted tests pass in local run
+- [x] 4.3 Typecheck and lint pass after all integrations
+- [x] 4.4 Ranking contract tests still fail on intentional ordering mutation
 
 #### Manual
 
-- [ ] 4.5 Manual timing sample shows p95 <= 1.2s for representative ingredient queries
-- [ ] 4.6 Another developer can follow runbook steps and reproduce end-to-end search flow
-- [ ] 4.7 Human reviewer explicitly approves all phase manual checkpoints
+- [x] 4.5 Manual timing sample shows p95 <= 1.2s for representative ingredient queries
+- [x] 4.6 Another developer can follow runbook steps and reproduce end-to-end search flow
+- [x] 4.7 Human reviewer explicitly approves all phase manual checkpoints
