@@ -70,6 +70,24 @@ describe("POST /api/recipes/search", () => {
     expect(payload.error).toContain("Invalid query");
   });
 
+  it("returns 400 for GET query with too many ingredients", async () => {
+    const app = buildTestApp(repositoryRecipes);
+    const ingredients = Array.from({ length: 21 }, (_, index) => `i${index}`);
+    const query = new URLSearchParams();
+    ingredients.forEach((value) => query.append("ingredients", value));
+
+    const response = await app.request(
+      `/api/recipes/search?${query.toString()}`,
+      {
+        method: "GET",
+      },
+    );
+
+    expect(response.status).toBe(400);
+    const payload = await response.json();
+    expect(payload.error).toContain("Invalid query");
+  });
+
   it("returns ranked recipes with metadata", async () => {
     const app = buildTestApp(repositoryRecipes);
 
@@ -135,6 +153,38 @@ describe("POST /api/recipes/search", () => {
 
     const payload = await response.json();
     expect(payload.error).toContain("Invalid payload");
+  });
+
+  it("returns 400 when payload ingredient value is too long", async () => {
+    const app = buildTestApp(repositoryRecipes);
+
+    const response = await app.request("/api/recipes/search", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ ingredients: ["a".repeat(65)] }),
+    });
+
+    expect(response.status).toBe(400);
+    const payload = await response.json();
+    expect(payload.error).toContain("Invalid payload");
+  });
+
+  it("deduplicates repeated ingredients from GET query", async () => {
+    const app = buildTestApp(repositoryRecipes);
+
+    const response = await app.request(
+      "/api/recipes/search?ingredients=ryż&ingredients=ryż&ingredients=%20ryż%20",
+      {
+        method: "GET",
+      },
+    );
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.query.ingredientCount).toBe(1);
+    expect(payload.query.ingredients).toEqual(["ryż"]);
   });
 
   it("returns 500 when repository fails", async () => {

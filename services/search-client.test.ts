@@ -81,6 +81,26 @@ describe("searchRecipes", () => {
       retryable: true,
     });
   });
+
+  it("maps malformed 200 responses to non-retryable SearchClientError", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        bad: true,
+      }),
+    });
+
+    await expect(
+      searchRecipes(["ryż"], {
+        baseUrl: "http://localhost:8787",
+        fetchImpl,
+      }),
+    ).rejects.toMatchObject({
+      name: "SearchClientError",
+      message: "Nieprawidłowa odpowiedź wyszukiwania.",
+      retryable: false,
+    });
+  });
 });
 
 describe("fetchIngredients", () => {

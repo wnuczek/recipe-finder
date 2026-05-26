@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type RankedRecipe = {
   id: string;
   title: string;
@@ -49,6 +51,30 @@ type SearchClientOptions = {
 const defaultApiBaseUrl =
   process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8787";
 
+const rankedRecipeSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  ingredients: z.array(z.string()),
+  favoritesCount: z.number(),
+  matchCount: z.number(),
+  matchPercent: z.number(),
+  rank: z.number(),
+});
+
+const searchResponseSchema = z.object({
+  query: z.object({
+    ingredients: z.array(z.string()),
+    ingredientCount: z.number(),
+    includeZeroMatches: z.boolean(),
+  }),
+  metadata: z.object({
+    totalCandidates: z.number(),
+    returnedCount: z.number(),
+    durationMs: z.number(),
+  }),
+  results: z.array(rankedRecipeSchema),
+});
+
 export async function searchRecipes(
   ingredients: string[],
   options: SearchClientOptions = {},
@@ -79,7 +105,15 @@ export async function searchRecipes(
       });
     }
 
-    return payload as SearchResponse;
+    const parsedPayload = searchResponseSchema.safeParse(payload);
+
+    if (!parsedPayload.success) {
+      throw new SearchClientError("Nieprawidłowa odpowiedź wyszukiwania.", {
+        retryable: false,
+      });
+    }
+
+    return parsedPayload.data;
   } catch (error) {
     if (error instanceof SearchClientError) {
       throw error;

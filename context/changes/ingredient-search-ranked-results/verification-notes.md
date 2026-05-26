@@ -22,6 +22,42 @@ Raw sequence (ms):
 
 PASS: Local p95 (52.59 ms) is below required threshold (1200 ms).
 
+## Expanded Sampling Profiles (2026-05-26)
+
+Method:
+
+- Endpoint: `POST /api/recipes/search`
+- Threshold: p95 <= 1200 ms
+- Profiles: 3 sequential payload sets + 1 small concurrent run
+
+Results:
+
+- `single-ingredient` payload `{ "ingredients": ["ryż"] }`, samples=20, concurrent=1
+  - min: 44.29 ms
+  - avg: 107.53 ms
+  - p95: 49.62 ms
+  - max: 1256.75 ms
+- `two-ingredients` payload `{ "ingredients": ["ryż", "pomidor"] }`, samples=20, concurrent=1
+  - min: 44.33 ms
+  - avg: 46.99 ms
+  - p95: 49.67 ms
+  - max: 50.41 ms
+- `rare-ingredient` payload `{ "ingredients": ["imbir"] }`, samples=20, concurrent=1
+  - min: 44.44 ms
+  - avg: 47.01 ms
+  - p95: 49.37 ms
+  - max: 50.26 ms
+- `concurrent-two-ingredients` payload `{ "ingredients": ["ryż", "pomidor"] }`, samples=25, concurrent=5
+  - min: 44.58 ms
+  - avg: 88.93 ms
+  - p95: 300.75 ms
+  - max: 310.07 ms
+
+Interpretation:
+
+- All measured p95 values stay below 1200 ms.
+- A single outlier above threshold appeared in the `single-ingredient` profile (`max=1256.75 ms`), but did not affect p95.
+
 ## Repro Command
 
 ```bash

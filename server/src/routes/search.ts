@@ -5,8 +5,21 @@ import { z } from "zod";
 import { rankRecipes } from "../search/rank-recipes";
 import type { Recipe, SearchRequest, SearchResponse } from "../search/types";
 
+const MAX_INGREDIENTS = 20;
+const MAX_INGREDIENT_LENGTH = 64;
+
+const normalizedIngredientSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(MAX_INGREDIENT_LENGTH);
+
 const searchRequestSchema = z.object({
-  ingredients: z.array(z.string().min(1)).min(1),
+  ingredients: z
+    .array(normalizedIngredientSchema)
+    .min(1)
+    .max(MAX_INGREDIENTS)
+    .transform((items) => [...new Set(items)]),
   includeZeroMatches: z.boolean().optional(),
 });
 
@@ -29,6 +42,10 @@ type SearchExecutionInput = {
   ingredients: string[];
   includeZeroMatches: boolean;
 };
+
+function normalizeIngredientList(values: string[]) {
+  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+}
 
 export function createSearchRoute(
   dependencies: Partial<SearchRouteDependencies> = {},
@@ -89,16 +106,24 @@ export function createSearchRoute(
     const ingredientsQuery = c.req.queries("ingredients") ?? [];
     const includeZeroMatchesQuery = c.req.query("includeZeroMatches");
 
-    const ingredients = ingredientsQuery
-      .flatMap((value) => value.split(","))
-      .map((value) => value.trim())
-      .filter((value) => value.length > 0);
+    const ingredients = normalizeIngredientList(
+      ingredientsQuery.flatMap((value) => value.split(",")),
+    );
 
-    if (ingredients.length === 0) {
+    if (ingredients.length === 0 || ingredients.length > MAX_INGREDIENTS) {
       return c.json(
         {
           error:
             "Invalid query. Expected at least one ingredients value, e.g. /api/recipes/search?ingredients=ryż",
+        },
+        400,
+      );
+    }
+
+    if (ingredients.some((value) => value.length > MAX_INGREDIENT_LENGTH)) {
+      return c.json(
+        {
+          error: "Invalid query. Ingredient value is too long.",
         },
         400,
       );

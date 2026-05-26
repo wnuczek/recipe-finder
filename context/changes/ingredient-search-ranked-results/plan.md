@@ -341,6 +341,16 @@ This plan introduces a new persisted storage layer. Rollout order is mandatory: 
 - Current route contract baseline: `server/src/routes/search.ts:15`
 - Current ranking contract baseline: `server/src/search/rank-recipes.ts:11`
 
+## Scope Addendum (2026-05-26)
+
+During implementation, repository-level AI tooling docs were updated in parallel:
+
+- `.github/copilot-instructions.md`
+- `.github/.10x-cli-manifest.json`
+- `.github/skills/10x-impl-review/SKILL.md`
+
+These are non-product support changes and are explicitly accepted as out-of-slice maintenance done in the same delivery window.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles. See `references/progress-format.md`.
