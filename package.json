@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
+    "server:build": "tsc -p server/tsconfig.json",
     "server:dev": "dotenv -e .env -- tsx watch server/src/index.ts",
     "server:start": "dotenv -e .env -- tsx server/src/index.ts",
     "server:typecheck": "tsc -p server/tsconfig.json --noEmit",
