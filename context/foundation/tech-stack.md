@@ -9,9 +9,14 @@ hints:
   ci_provider: github-actions
   ci_default_flow: auto-deploy-on-merge
   bootstrapper_confidence: verified
-  path_taken: standard
-  quality_override: false
-  self_check_answers: null
+  path_taken: custom
+  quality_override: true
+  self_check_answers:
+    typed: true
+    from_official_starter: false
+    conventions: true
+    docs_current: false
+    can_judge_agent: false
   has_auth: false
   has_payments: false
   has_realtime: false
@@ -21,4 +26,4 @@ hints:
 
 ## Why this stack
 
-This project keeps the Expo starter for fast JavaScript iteration, but the MVP release direction is now web-only on Cloudflare. The product scope remains ingredient search plus recipe scaling, with no explicit auth, payments, realtime, AI, or background jobs in MVP scope. Backend work is conditional and should be introduced only if local-flow validation misses NFR guardrails. GitHub Actions with auto-deploy-on-merge remains the default CI flow for a solo, short-horizon delivery setup.
+RecipeFinder targets web MVP first, then App Store and Play Store — making Expo (React Native) the lead starter: a single TypeScript codebase ships to web via Cloudflare Pages now, and to iOS/Android via EAS later with no frontend rewrite. The backend is Hono.js (lightweight, TypeScript-native, multi-runtime) paired with PostgreSQL, hosted on Railway — chosen explicitly to avoid Cloudflare Workers' long-lived TCP connection limits and to keep the stack portable across providers. No auth, payments, realtime, AI, or background jobs are in MVP scope. CI/CD is GitHub Actions with auto-deploy on merge. Three of five self-check points were marked uncertain (official starter familiarity, docs currency, agent-output judgment); extra human review of AI-generated Hono and Expo code is advised until confidence builds.

@@ -14,7 +14,7 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-api.design-054.workers.dev"
+        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-production-943b.up.railway.app"
       },
       "ios": {
         "simulator": false
@@ -23,7 +23,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-api.design-054.workers.dev"
+        "EXPO_PUBLIC_API_BASE_URL": "https://recipe-finder-production-943b.up.railway.app"
       }
     }
   },
