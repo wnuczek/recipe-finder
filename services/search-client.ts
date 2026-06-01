@@ -48,7 +48,8 @@ type SearchClientOptions = {
   fetchImpl?: typeof fetch;
 };
 
-const productionApiBaseUrl = "https://recipe-finder-api.design-054.workers.dev";
+const productionApiBaseUrl =
+  "https://recipe-finder-production-943b.up.railway.app";
 
 const defaultApiBaseUrl =
   process.env.EXPO_PUBLIC_API_BASE_URL ??
