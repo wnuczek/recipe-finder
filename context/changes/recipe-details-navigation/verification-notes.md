@@ -21,37 +21,57 @@ Suite breakdown:
 Phase commits: `e84559b` (p1 data foundation), `99f58f9` (p2 details endpoint),
 `946137c` (p3 navigation + details screen).
 
-## Production Rollout (Railway) — TODO (manual)
+## Production Rollout (Railway) — VERIFIED (2026-06-08)
 
-Deploy order (backward-compatible code → migrate → reseed → measure):
+Verified directly against the live Railway deployment:
 
-- [ ] Server code deployed to Railway
-- [ ] `npm run db:migrate` applied against the production DB (additive: `amount`, `unit` nullable columns)
-- [ ] `npm run db:seed` reseeded with quantities
-- [ ] `curl https://recipe-finder-production-943b.up.railway.app/api/recipes/r-001` returns title + ingredients with `amount`/`unit`
+- [x] Server code deployed — `/health` HTTP 200, existing `GET /api/recipes/search` HTTP 200
+- [x] Migration applied + DB reseeded with quantities (confirmed via deployed endpoint payload below)
+- [x] `GET https://recipe-finder-production-943b.up.railway.app/api/recipes/r-001` returns title + ingredients with `amount`/`unit`, including a null/null ("to taste") row
 
-Confirmation: _record date + outcome here_
+Deployed `GET /api/recipes/r-001` response:
 
-## Performance Sampling Method (p95 hard gate) — TODO (manual)
+```json
+{"recipe":{"id":"r-001","title":"Makaron pomidorowy z bazylią","favoritesCount":40,
+"ingredients":[{"name":"bazylia","amount":null,"unit":null},{"name":"czosnek","amount":2,"unit":"szt"},
+{"name":"makaron","amount":250,"unit":"g"},{"name":"oliwa z oliwek","amount":2,"unit":"łyżka"},
+{"name":"pomidor","amount":400,"unit":"g"}]},"metadata":{"durationMs":289.92}}
+```
+
+Note: migrate/reseed were confirmed by the populated, alphabetically-ordered quantities in the
+deployed payload (run from Railway-side; not executed from this workstation, which lacks the prod URL).
+
+## Performance Sampling Method (p95 hard gate) — MEASURED (2026-06-08)
 
 - Endpoint: `GET /api/recipes/:id`
-- Target: Railway deployment (`https://recipe-finder-production-943b.up.railway.app`) — **after** migration + reseed
-- Sample size: ≥ 30 sequential requests
-- Metric source: client-measured wall-clock round-trip latency (recipe "open time")
+- Target: Railway deployment (`https://recipe-finder-production-943b.up.railway.app`) — after migration + reseed
+- Sample size: 40 sequential requests (1 warmup discarded), cycling ids r-001…r-005
+- Metric source: client-measured wall-clock round-trip latency (recipe "open time"); server `metadata.durationMs` recorded as supplementary
 - Threshold: p95 ≤ 700 ms
 
-### Observed Values — TODO
+### Observed Values
 
-- min: _ms_
-- avg: _ms_
-- p95: _ms_
-- max: _ms_
+Wall-clock round-trip (open time, gate metric):
 
-Raw sequence (ms): _paste here_
+- min: 454.08 ms
+- avg: 534.53 ms
+- p95: 603.44 ms
+- max: 618.67 ms
 
-### Gate Result — TODO
+Server-side `metadata.durationMs` (supplementary):
 
-_PASS/FAIL: production p95 (___ ms) vs required threshold (700 ms). A failing value blocks close-out._
+- min: 288.56 ms
+- avg: 289.13 ms
+- p95: 289.93 ms
+- max: 290.32 ms
+
+Raw wall sequence (ms): 618.67, 603.82, 457.06, 595.14, 468.75, 602.89, 594.84, 603.05, 456.95, 456.03, 598.67, 455.67, 596.77, 455.45, 454.26, 455, 456.09, 454.67, 454.64, 596.69, 603.44, 596.67, 457.15, 455.18, 592.95, 455.21, 601.21, 591.98, 591.76, 594.9, 602.75, 597.25, 454.89, 597.19, 593.02, 597.52, 597.01, 457.3, 454.08, 454.6
+
+### Gate Result
+
+**PASS**: production wall-clock p95 (603.44 ms) is below the required threshold (700 ms).
+The ~165 ms gap between wall-clock and server `durationMs` (289.93 ms) is network RTT from the
+measuring client to Railway, so the gate metric is a conservative real-client "open time".
 
 ### Repro Command
 
