@@ -1,4 +1,5 @@
-import { StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { useThemeColor } from "@/hooks/use-theme-color";
@@ -9,6 +10,7 @@ type RecipeResultCardProps = {
 };
 
 export function RecipeResultCard({ recipe }: RecipeResultCardProps) {
+  const router = useRouter();
   const border = useThemeColor(
     { light: "#d8e2e8", dark: "#30404a" },
     "background",
@@ -17,7 +19,12 @@ export function RecipeResultCard({ recipe }: RecipeResultCardProps) {
   const tint = useThemeColor({}, "tint");
 
   return (
-    <View style={[styles.card, { borderColor: border }]}>
+    <Pressable
+      style={[styles.card, { borderColor: border }]}
+      onPress={() => router.push(`/recipe/${recipe.id}`)}
+      accessibilityRole="button"
+      accessibilityLabel={`Otwórz przepis: ${recipe.title}`}
+    >
       <View style={styles.row}>
         <ThemedText type="defaultSemiBold" style={styles.title}>
           {recipe.rank}. {recipe.title}
@@ -35,7 +42,7 @@ export function RecipeResultCard({ recipe }: RecipeResultCardProps) {
           Ulubione: {recipe.favoritesCount}
         </ThemedText>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

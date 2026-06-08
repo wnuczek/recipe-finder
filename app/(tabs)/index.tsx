@@ -4,6 +4,7 @@ import { SelectedIngredientsSection } from "@/components/selected-ingredients-se
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { setRecipeSnapshots } from "@/services/recipe-snapshot-cache";
 import { SearchClientError, searchRecipes } from "@/services/search-client";
 import {
   applyError,
@@ -45,6 +46,7 @@ export default function HomeScreen() {
     setSearchState((prev) => applyLoading(prev));
     try {
       const response = await searchRecipes(requestIngredients);
+      setRecipeSnapshots(response.results);
       setSearchState((prev) =>
         applySuccess(prev, requestIngredients, response.results),
       );

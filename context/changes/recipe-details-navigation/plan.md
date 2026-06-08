@@ -358,30 +358,30 @@ Close the change with the full validation suite, production rollout of migration
 
 #### Automated
 
-- [x] 2.1 Server tests pass including new details suite (`npm run server:test`)
-- [x] 2.2 Server typecheck passes (`npm run server:typecheck`)
-- [x] 2.3 Server lint passes (`npm run server:lint`)
+- [x] 2.1 Server tests pass including new details suite (`npm run server:test`) — 99f58f9
+- [x] 2.2 Server typecheck passes (`npm run server:typecheck`) — 99f58f9
+- [x] 2.3 Server lint passes (`npm run server:lint`) — 99f58f9
 
 #### Manual
 
-- [x] 2.4 curl known id returns title + ingredients with amounts/units
-- [x] 2.5 curl unknown id returns 404 with error body
+- [x] 2.4 curl known id returns title + ingredients with amounts/units — 99f58f9
+- [x] 2.5 curl unknown id returns 404 with error body — 99f58f9
 
 ### Phase 3: Navigation + Details Screen
 
 #### Automated
 
-- [ ] 3.1 Client tests pass (`npm run client:test`)
-- [ ] 3.2 Component tests pass (`npm run app:test`)
-- [ ] 3.3 App typecheck passes (`npm run typecheck`)
-- [ ] 3.4 Lint passes (`npm run lint`)
+- [x] 3.1 Client tests pass (`npm run client:test`)
+- [x] 3.2 Component tests pass (`npm run app:test`)
+- [x] 3.3 App typecheck passes (`npm run typecheck`)
+- [x] 3.4 Lint passes (`npm run lint`)
 
 #### Manual
 
-- [ ] 3.5 Web tap-through: search → details with quantities → back to intact results
-- [ ] 3.6 Web refresh on details URL renders from network alone
-- [ ] 3.7 Unknown id shows not-found with working back-to-search link
-- [ ] 3.8 Server-down error state + successful Retry after restart
+- [x] 3.5 Web tap-through: search → details with quantities → back to intact results
+- [x] 3.6 Web refresh on details URL renders from network alone
+- [x] 3.7 Unknown id shows not-found with working back-to-search link
+- [x] 3.8 Server-down error state + successful Retry after restart
 
 ### Phase 4: Verification & p95 Evidence
 
