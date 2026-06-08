@@ -351,8 +351,8 @@ Close the change with the full validation suite, production rollout of migration
 
 #### Manual
 
-- [ ] 1.6 DB rows show sensible amount/unit (or null pair) for every seeded ingredient
-- [ ] 1.7 Local search flow still returns identical ranked results after migration + reseed
+- [x] 1.6 DB rows show sensible amount/unit (or null pair) for every seeded ingredient — e84559b
+- [x] 1.7 Local search flow still returns identical ranked results after migration + reseed — e84559b
 
 ### Phase 2: Recipe Details Endpoint
 
@@ -371,23 +371,23 @@ Close the change with the full validation suite, production rollout of migration
 
 #### Automated
 
-- [x] 3.1 Client tests pass (`npm run client:test`)
-- [x] 3.2 Component tests pass (`npm run app:test`)
-- [x] 3.3 App typecheck passes (`npm run typecheck`)
-- [x] 3.4 Lint passes (`npm run lint`)
+- [x] 3.1 Client tests pass (`npm run client:test`) — 946137c
+- [x] 3.2 Component tests pass (`npm run app:test`) — 946137c
+- [x] 3.3 App typecheck passes (`npm run typecheck`) — 946137c
+- [x] 3.4 Lint passes (`npm run lint`) — 946137c
 
 #### Manual
 
-- [x] 3.5 Web tap-through: search → details with quantities → back to intact results
-- [x] 3.6 Web refresh on details URL renders from network alone
-- [x] 3.7 Unknown id shows not-found with working back-to-search link
-- [x] 3.8 Server-down error state + successful Retry after restart
+- [x] 3.5 Web tap-through: search → details with quantities → back to intact results — 946137c
+- [x] 3.6 Web refresh on details URL renders from network alone — 946137c
+- [x] 3.7 Unknown id shows not-found with working back-to-search link — 946137c
+- [x] 3.8 Server-down error state + successful Retry after restart — 946137c
 
 ### Phase 4: Verification & p95 Evidence
 
 #### Automated
 
-- [ ] 4.1 Full validation suite green (`npm run validate`)
+- [x] 4.1 Full validation suite green (`npm run validate`)
 
 #### Manual
 
