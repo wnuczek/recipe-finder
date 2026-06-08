@@ -1,6 +1,10 @@
 import { asc, eq, inArray } from "drizzle-orm";
 
-import type { Recipe } from "../../search/types";
+import type {
+  Recipe,
+  RecipeDetails,
+  RecipeDetailsIngredient,
+} from "../../search/types";
 import { db } from "../client";
 import { recipeIngredientsTable, recipesTable } from "../schema";
 
@@ -70,6 +74,52 @@ export async function listRecipesForSearch(
           );
 
   return mapRowsToRecipes(rows);
+}
+
+export async function getRecipeById(
+  id: string,
+): Promise<RecipeDetails | null> {
+  const rows = await db
+    .select({
+      id: recipesTable.id,
+      title: recipesTable.title,
+      favoritesCount: recipesTable.favoritesCount,
+      ingredient: recipeIngredientsTable.ingredient,
+      amount: recipeIngredientsTable.amount,
+      unit: recipeIngredientsTable.unit,
+    })
+    .from(recipesTable)
+    .leftJoin(
+      recipeIngredientsTable,
+      eq(recipeIngredientsTable.recipeId, recipesTable.id),
+    )
+    .where(eq(recipesTable.id, id))
+    .orderBy(asc(recipeIngredientsTable.ingredient));
+
+  const first = rows[0];
+
+  if (!first) {
+    return null;
+  }
+
+  const ingredients: RecipeDetailsIngredient[] = [];
+
+  for (const row of rows) {
+    if (row.ingredient) {
+      ingredients.push({
+        name: row.ingredient,
+        amount: row.amount ?? null,
+        unit: row.unit ?? null,
+      });
+    }
+  }
+
+  return {
+    id: first.id,
+    title: first.title,
+    favoritesCount: first.favoritesCount,
+    ingredients,
+  };
 }
 
 export async function listIngredients(): Promise<string[]> {

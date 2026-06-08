@@ -8,6 +8,13 @@
       "when": 1779780457872,
       "tag": "0000_mean_whistler",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780673133581,
+      "tag": "0001_opposite_hex",
+      "breakpoints": true
     }
   ]
 }

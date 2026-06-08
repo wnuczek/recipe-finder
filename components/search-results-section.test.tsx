@@ -8,6 +8,10 @@ jest.mock("@/hooks/use-theme-color", () => ({
   useThemeColor: () => "#888",
 }));
 
+jest.mock("expo-router", () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
+
 describe("SearchResultsSection", () => {
   const onRetry = jest.fn();
 
