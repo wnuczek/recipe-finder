@@ -1,12 +1,12 @@
 import { inArray, notInArray, sql } from "drizzle-orm";
 
-import { RECIPES } from "../search/recipes.fixture";
+import { SEED_RECIPES } from "../search/recipes.fixture";
 import { db, sqlClient } from "./client";
 import { recipeIngredientsTable, recipesTable } from "./schema";
 
 async function seed() {
   await db.transaction(async (tx) => {
-    const recipeIds = RECIPES.map((recipe) => recipe.id);
+    const recipeIds = SEED_RECIPES.map((recipe) => recipe.id);
 
     if (recipeIds.length > 0) {
       await tx
@@ -19,7 +19,7 @@ async function seed() {
     await tx
       .insert(recipesTable)
       .values(
-        RECIPES.map((recipe) => ({
+        SEED_RECIPES.map((recipe) => ({
           id: recipe.id,
           title: recipe.title,
           favoritesCount: recipe.favoritesCount,
@@ -38,10 +38,12 @@ async function seed() {
       .where(inArray(recipeIngredientsTable.recipeId, recipeIds));
 
     await tx.insert(recipeIngredientsTable).values(
-      RECIPES.flatMap((recipe) =>
+      SEED_RECIPES.flatMap((recipe) =>
         recipe.ingredients.map((ingredient) => ({
           recipeId: recipe.id,
-          ingredient,
+          ingredient: ingredient.name,
+          amount: ingredient.amount,
+          unit: ingredient.unit,
         })),
       ),
     );

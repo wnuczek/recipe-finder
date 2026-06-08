@@ -11,6 +11,19 @@ export type RankedRecipe = Recipe & {
   rank: number;
 };
 
+export type RecipeDetailsIngredient = {
+  name: string;
+  amount: number | null;
+  unit: string | null;
+};
+
+export type RecipeDetails = {
+  id: string;
+  title: string;
+  favoritesCount: number;
+  ingredients: RecipeDetailsIngredient[];
+};
+
 export type SearchRequest = {
   ingredients: string[];
   includeZeroMatches?: boolean;
