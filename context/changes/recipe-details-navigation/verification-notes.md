@@ -39,7 +39,7 @@ Deployed `GET /api/recipes/r-001` response:
 ```
 
 Note: migrate/reseed were confirmed by the populated, alphabetically-ordered quantities in the
-deployed payload (run from Railway-side; not executed from this workstation, which lacks the prod URL).
+deployed payload (request executed from within Railway; not executed from this workstation).
 
 ## Performance Sampling Method (p95 hard gate) — MEASURED (2026-06-08)
 
