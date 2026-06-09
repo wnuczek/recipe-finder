@@ -26,7 +26,6 @@ import {
 export default function HomeScreen() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [searchState, setSearchState] = useState(createInitialSearchState());
-  const tint = useThemeColor({}, "tint");
   const icon = useThemeColor({}, "icon");
 
   function addIngredient(ingredient: string) {
@@ -104,7 +103,6 @@ export default function HomeScreen() {
           <Pressable
             style={[
               styles.searchButton,
-              { backgroundColor: tint },
               (ingredients.length === 0 || searchState.status === "loading") &&
                 styles.searchButtonDisabled,
             ]}
@@ -173,6 +171,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   searchButton: {
+    backgroundColor: "#0a7ea4",
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: "center",
