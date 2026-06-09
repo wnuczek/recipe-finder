@@ -76,7 +76,7 @@ measuring client to Railway, so the gate metric is a conservative real-client "o
 ### Repro Command
 
 ```bash
-node -e 'const samples=30;const id="r-001";const url=`https://recipe-finder-production-943b.up.railway.app/api/recipes/${id}`;(async()=>{const vals=[];for(let i=0;i<samples;i++){const t0=performance.now();const res=await fetch(url);await res.json();vals.push(performance.now()-t0);}const sorted=[...vals].sort((a,b)=>a-b);const p95=sorted[Math.max(0,Math.ceil(0.95*sorted.length)-1)];const avg=vals.reduce((a,b)=>a+b,0)/vals.length;console.log({samples,min:sorted[0],avg:Math.round(avg*100)/100,p95:Math.round(p95*100)/100,max:sorted[sorted.length-1]});console.log("raw:",vals.map(v=>Math.round(v*100)/100).join(", "));})()'
+node -e 'const samples=40;const ids=["r-001","r-002","r-003","r-004","r-005"];const base="https://recipe-finder-production-943b.up.railway.app";(async()=>{const vals=[];for(let i=0;i<=samples;i++){const id=ids[i%ids.length];const url=`${base}/api/recipes/${id}`;const t0=performance.now();const res=await fetch(url);await res.json();const elapsed=performance.now()-t0;if(i===0)continue;vals.push(elapsed);}const sorted=[...vals].sort((a,b)=>a-b);const p95=sorted[Math.max(0,Math.ceil(0.95*sorted.length)-1)];const avg=vals.reduce((a,b)=>a+b,0)/vals.length;console.log({samples,min:sorted[0],avg:Math.round(avg*100)/100,p95:Math.round(p95*100)/100,max:sorted[sorted.length-1]});console.log("raw:",vals.map(v=>Math.round(v*100)/100).join(", "));})()'
 ```
 
 ## Manual End-to-End Pass (deployed web build) — VERIFIED (2026-06-08)
