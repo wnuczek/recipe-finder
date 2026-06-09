@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+import type {
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
+import { IngredientSuggestionList } from "@/components/ingredient-suggestion-list";
 import { INGREDIENTS } from "@/constants/ingredients";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { matchIngredients } from "@/services/ingredient-match";
 import { fetchIngredients } from "@/services/search-client";
 
 type IngredientInputProps = {
@@ -21,6 +20,7 @@ export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
   const [query, setQuery] = useState("");
   const [availableIngredients, setAvailableIngredients] =
     useState<string[]>(INGREDIENTS);
+  const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -47,7 +47,6 @@ export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
   }, []);
 
   const text = useThemeColor({}, "text");
-  const tint = useThemeColor({}, "tint");
   const icon = useThemeColor({}, "icon");
   const border = useThemeColor(
     { light: "#d1d5db", dark: "#374151" },
@@ -58,21 +57,40 @@ export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
     "background",
   );
 
-  const suggestions =
-    query.trim().length > 0
-      ? availableIngredients
-          .filter(
-            (ing) =>
-              ing.toLowerCase().includes(query.toLowerCase()) &&
-              !selected.includes(ing),
-          )
-          .slice(0, 6)
-      : [];
+  const hasQuery = query.trim().length > 0;
+  const { items: suggestions, truncated } = matchIngredients(
+    query,
+    availableIngredients,
+    selected,
+  );
+
+  // Reset the keyboard cursor whenever the result set changes.
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query]);
 
   function handleSelect(ingredient: string) {
     onAdd(ingredient);
     setQuery("");
     inputRef.current?.focus();
+  }
+
+  function handleKeyPress(
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>,
+  ) {
+    const { key } = event.nativeEvent;
+    if (key === "ArrowDown") {
+      setActiveIndex((index) => Math.min(index + 1, suggestions.length - 1));
+    } else if (key === "ArrowUp") {
+      setActiveIndex((index) => Math.max(index - 1, 0));
+    }
+  }
+
+  function handleSubmit() {
+    const active = suggestions[activeIndex];
+    if (active) {
+      handleSelect(active);
+    }
   }
 
   return (
@@ -91,38 +109,21 @@ export function IngredientInput({ selected, onAdd }: IngredientInputProps) {
           placeholderTextColor={icon}
           value={query}
           onChangeText={setQuery}
+          onKeyPress={handleKeyPress}
+          onSubmitEditing={handleSubmit}
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="search"
         />
       </View>
-      {suggestions.length > 0 && (
-        <View
-          style={[
-            styles.dropdown,
-            { backgroundColor: suggestionBg, borderColor: border },
-          ]}
-        >
-          <FlatList
-            data={suggestions}
-            keyExtractor={(item) => item}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item }) => (
-              <Pressable
-                style={({ pressed }) => [
-                  styles.suggestion,
-                  pressed && { backgroundColor: tint + "1a" },
-                ]}
-                onPress={() => handleSelect(item)}
-              >
-                <Text style={[styles.suggestionText, { color: text }]}>
-                  {item}
-                </Text>
-                <Text style={[styles.addIcon, { color: tint }]}>+</Text>
-              </Pressable>
-            )}
-          />
-        </View>
+      {hasQuery && (
+        <IngredientSuggestionList
+          suggestions={suggestions}
+          query={query}
+          activeIndex={activeIndex}
+          truncated={truncated}
+          onSelect={handleSelect}
+        />
       )}
     </View>
   );
@@ -149,36 +150,5 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     padding: 0,
-  },
-  dropdown: {
-    position: "absolute",
-    top: "100%",
-    left: 0,
-    right: 0,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
-    maxHeight: 220,
-    overflow: "hidden",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  suggestion: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  suggestionText: {
-    fontSize: 15,
-  },
-  addIcon: {
-    fontSize: 20,
-    fontWeight: "600",
   },
 });
