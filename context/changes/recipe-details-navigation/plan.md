@@ -391,7 +391,7 @@ Close the change with the full validation suite, production rollout of migration
 
 #### Manual
 
-- [x] 4.2 Production migrated + reseeded; deployed details endpoint returns quantities shape
-- [x] 4.3 p95 ≤ 700ms evidence recorded in verification-notes.md (hard gate)
-- [ ] 4.4 End-to-end manual pass on deployed web build (search → details → back, refresh, not-found)
-- [ ] 4.5 Human sign-off recorded in verification-notes.md
+- [x] 4.2 Production migrated + reseeded; deployed details endpoint returns quantities shape — edc2a26
+- [x] 4.3 p95 ≤ 700ms evidence recorded in verification-notes.md (hard gate) — edc2a26
+- [x] 4.4 End-to-end manual pass on deployed web build (search → details → back, refresh, not-found)
+- [x] 4.5 Human sign-off recorded in verification-notes.md

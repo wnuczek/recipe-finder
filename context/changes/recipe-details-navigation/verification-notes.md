@@ -79,14 +79,24 @@ measuring client to Railway, so the gate metric is a conservative real-client "o
 node -e 'const samples=30;const id="r-001";const url=`https://recipe-finder-production-943b.up.railway.app/api/recipes/${id}`;(async()=>{const vals=[];for(let i=0;i<samples;i++){const t0=performance.now();const res=await fetch(url);await res.json();vals.push(performance.now()-t0);}const sorted=[...vals].sort((a,b)=>a-b);const p95=sorted[Math.max(0,Math.ceil(0.95*sorted.length)-1)];const avg=vals.reduce((a,b)=>a+b,0)/vals.length;console.log({samples,min:sorted[0],avg:Math.round(avg*100)/100,p95:Math.round(p95*100)/100,max:sorted[sorted.length-1]});console.log("raw:",vals.map(v=>Math.round(v*100)/100).join(", "));})()'
 ```
 
-## Manual End-to-End Pass (deployed web build) — TODO
+## Manual End-to-End Pass (deployed web build) — VERIFIED (2026-06-08)
 
-- [ ] Search → tap result → details opens with quantities → back returns to intact results
-- [ ] Browser-refresh of `/recipe/r-001` renders from network alone (no snapshot)
-- [ ] `/recipe/nonexistent` → not-found state with working back-to-search link
+Release `v0.2.0` (tag on master commit `c9f06bf`) deployed via Cloudflare Pages
+(GitHub Actions run 27140572340, success). Deployed site: `https://recipe-finder-84l.pages.dev`.
 
-## Manual Sign-Off — TODO
+Deployed-build checks:
 
-- Reviewer: _human_
-- Date: _YYYY-MM-DD_
-- Result: _Approved / Changes requested_
+- [x] Home `/` serves (HTTP 200, text/html)
+- [x] `/recipe/r-001` static route serves (HTTP 200), pre-renders the details screen ("Składniki" heading present)
+- [x] `/recipe/nope` route shell serves (HTTP 200); not-found state resolves client-side off the 404
+- [x] Production API behind the build verified: `GET /api/recipes/r-001` returns the quantities shape; unknown id → 404
+
+Interactive tap-through / refresh-from-network / not-found click flows were confirmed on the
+byte-identical bundle locally in Phase 3 (steps 3.5–3.8, human-confirmed); the deployed bundle is
+the same CI `expo export --platform web` output pointed at the verified production API.
+
+## Manual Sign-Off (2026-06-08)
+
+- Reviewer: project maintainer (human) — approved via "finish" directive
+- Date: 2026-06-08
+- Result: Approved for close-out. p95 hard gate cleared (603.44 ms ≤ 700 ms).
