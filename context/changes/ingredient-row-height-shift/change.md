@@ -1,7 +1,7 @@
 ---
 change_id: ingredient-row-height-shift
 title: Stabilize ingredient row height during scaling
-status: impl_reviewed
+status: implemented
 created: 2026-06-09
 updated: 2026-06-09
 archived_at: null

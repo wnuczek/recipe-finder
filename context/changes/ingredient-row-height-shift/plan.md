@@ -143,13 +143,13 @@ None — rendering one extra always-present text node per scalable row is neglig
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run typecheck`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Component tests pass: `npm run app:test`
+- [x] 1.1 Type checking passes: `npm run typecheck` — 2d00a19
+- [x] 1.2 Linting passes: `npm run lint` — 2d00a19
+- [x] 1.3 Component tests pass: `npm run app:test` — 2d00a19
 
 #### Manual
 
-- [x] 1.4 Scaling an ingredient does not move the rows below it
-- [x] 1.5 The `oryg.` line appears only when scaled away from the original amount
-- [x] 1.6 Row height is visually identical at original and scaled states
-- [x] 1.7 Screen reader does not announce an original amount at factor 1
+- [x] 1.4 Scaling an ingredient does not move the rows below it — 2d00a19
+- [x] 1.5 The `oryg.` line appears only when scaled away from the original amount — 2d00a19
+- [x] 1.6 Row height is visually identical at original and scaled states — 2d00a19
+- [x] 1.7 Screen reader does not announce an original amount at factor 1 — 2d00a19
