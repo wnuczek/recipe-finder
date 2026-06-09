@@ -184,16 +184,16 @@ candidate with a tiny constant. No memoization needed at this scale.
 
 #### Automated
 
-- [x] 1.1 Type checking passes: `npm run typecheck`
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Matching module tests pass: `npm run client:test`
-- [x] 1.4 Component tests pass: `npm run app:test`
+- [x] 1.1 Type checking passes: `npm run typecheck` — 9d75b37
+- [x] 1.2 Linting passes: `npm run lint` — 9d75b37
+- [x] 1.3 Matching module tests pass: `npm run client:test` — 9d75b37
+- [x] 1.4 Component tests pass: `npm run app:test` — 9d75b37
 
 #### Manual
 
-- [x] 1.5 Accent-free query matches accented ingredient (`losos`→`łosoś`, `zolta`→`papryka żółta`)
-- [x] 1.6 Prefix match leads and truncation hint shows for many matches
-- [x] 1.7 No-match query shows the "Brak składników" empty row
-- [x] 1.8 Matched portion of each suggestion is highlighted
-- [x] 1.9 Arrow keys move the active suggestion and Enter adds it
-- [x] 1.10 Selecting clears + refocuses input; selected items don't reappear
+- [x] 1.5 Accent-free query matches accented ingredient (`losos`→`łosoś`, `zolta`→`papryka żółta`) — 9d75b37
+- [x] 1.6 Prefix match leads and truncation hint shows for many matches — 9d75b37
+- [x] 1.7 No-match query shows the "Brak składników" empty row — 9d75b37
+- [x] 1.8 Matched portion of each suggestion is highlighted — 9d75b37
+- [x] 1.9 Arrow keys move the active suggestion and Enter adds it — 9d75b37
+- [x] 1.10 Selecting clears + refocuses input; selected items don't reappear — 9d75b37

@@ -1,7 +1,7 @@
 ---
 change_id: autocomplete-improvement
 title: Autocomplete improvement
-status: implementing
+status: implemented
 created: 2026-06-09
 updated: 2026-06-09
 archived_at: null
