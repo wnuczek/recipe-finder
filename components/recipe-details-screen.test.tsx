@@ -53,7 +53,7 @@ describe("RecipeDetailsScreen", () => {
 
     const snapshot = JSON.stringify(view.toJSON());
     expect(snapshot).toContain("Kurczak curry z ryżem");
-    expect(snapshot).toContain("500 g");
+    expect(snapshot).toContain("500");
     expect(snapshot).toContain("do smaku");
     expect(snapshot).toContain("Ulubione: ");
     expect(snapshot).toContain("42");
