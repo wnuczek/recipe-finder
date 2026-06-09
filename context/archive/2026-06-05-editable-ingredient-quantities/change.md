@@ -1,10 +1,10 @@
 ---
 change_id: editable-ingredient-quantities
 title: Editable ingredient quantities with proportional recalculation
-status: impl_reviewed
+status: archived
 created: 2026-06-05
 updated: 2026-06-09
-archived_at: null
+archived_at: 2026-06-09T09:30:22Z
 ---
 
 ## Notes

@@ -3,7 +3,7 @@ project: RecipeFinder
 version: 3
 status: draft
 created: 2026-06-02
-updated: 2026-06-03
+updated: 2026-06-09
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -33,7 +33,7 @@ RecipeFinder helps a home cook quickly find matching recipes from available ingr
 | F-02 | minimal-search-api-foundation           | (foundation) backend search API scaffolded and deployed to Railway      | F-01          | FR-003, FR-004, NFR-01        | done     |
 | S-01 | ingredient-search-ranked-results        | select ingredients and get recipe results sorted by match score         | —             | US-01, FR-001, FR-003, FR-004 | done     |
 | S-02 | recipe-details-navigation               | open recipe details from search results                                 | S-01          | US-01, FR-005                 | ready    |
-| S-03 | editable-ingredient-quantities          | edit one ingredient quantity directly in recipe details                 | S-02          | US-01, FR-005, FR-006         | proposed |
+| S-03 | editable-ingredient-quantities          | edit one ingredient quantity directly in recipe details                 | S-02          | US-01, FR-005, FR-006         | done     |
 | S-04 | proportional-scaling-supported-units    | see all ingredient quantities recalculate proportionally after an edit  | S-03          | US-01, FR-006                 | proposed |
 | S-05 | search-and-details-performance-guardrail| use search and details with responsive behavior aligned to MVP guardrails | S-02, S-04  | US-01, FR-003, FR-005         | proposed |
 
@@ -114,7 +114,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Does `recipe_ingredients` store quantity and unit per ingredient, or only ingredient text? If quantity+unit are absent, the model must be extended before this slice can be fully implemented. — Owner: user. Block: no.
 - **Risk:** Editable fields without strong parsing/validation can create invalid scaling inputs that break downstream recalculation.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Proportional scaling for supported units
 
@@ -173,3 +173,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: Cloudflare web deploy baseline** — Implemented as of 2026-06-02. `cloudflare-web-deploy-baseline`. Deploy infra in place (wrangler.api.toml, railway.json, GitHub Actions workflows). Lesson: —.
 - **F-02: Minimal search API foundation** — Implemented as of 2026-06-02. `minimal-search-api-foundation`. Hono.js server + `POST /api/search` deployed to Railway. Lesson: —.
 - **S-01: Ingredient search with ranked results** — Implemented as of 2026-06-02. `ingredient-search-ranked-results`. Full ingredient selection + ranked recipe results working end-to-end. Lesson: —.
+- **S-03: user can modify one ingredient amount in recipe details as the scaling input.** — Archived 2026-06-09 → `context/archive/2026-06-05-editable-ingredient-quantities/`. Lesson: —.
