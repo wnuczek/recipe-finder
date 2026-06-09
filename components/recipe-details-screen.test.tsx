@@ -22,10 +22,14 @@ const details: RecipeDetails = {
 describe("RecipeDetailsScreen", () => {
   const onRetry = jest.fn();
   const onBack = jest.fn();
+  const onStep = jest.fn();
+  const onReset = jest.fn();
 
   afterEach(() => {
     onRetry.mockReset();
     onBack.mockReset();
+    onStep.mockReset();
+    onReset.mockReset();
   });
 
   it("renders quantities and a do-smaku row on success", () => {
@@ -37,7 +41,14 @@ describe("RecipeDetailsScreen", () => {
     };
 
     const view = render(
-      <RecipeDetailsScreen state={state} onRetry={onRetry} onBack={onBack} />,
+      <RecipeDetailsScreen
+        state={state}
+        factor={1}
+        onRetry={onRetry}
+        onBack={onBack}
+        onStep={onStep}
+        onReset={onReset}
+      />,
     );
 
     const snapshot = JSON.stringify(view.toJSON());
@@ -46,6 +57,45 @@ describe("RecipeDetailsScreen", () => {
     expect(snapshot).toContain("do smaku");
     expect(snapshot).toContain("Ulubione: ");
     expect(snapshot).toContain("42");
+  });
+
+  it("steps an ingredient and shows reset when scaled", () => {
+    const state: RecipeDetailsUiState = {
+      status: "success",
+      snapshot: null,
+      details,
+      errorMessage: null,
+    };
+
+    // factor 1 → no reset button yet.
+    const { rerender } = render(
+      <RecipeDetailsScreen
+        state={state}
+        factor={1}
+        onRetry={onRetry}
+        onBack={onBack}
+        onStep={onStep}
+        onReset={onReset}
+      />,
+    );
+    expect(screen.queryByLabelText("Przywróć oryginalne ilości")).toBeNull();
+
+    fireEvent.press(screen.getByLabelText("Zwiększ kurczak"));
+    expect(onStep).toHaveBeenCalledWith("kurczak", "increment");
+
+    // scaled → reset button appears and fires onReset.
+    rerender(
+      <RecipeDetailsScreen
+        state={state}
+        factor={1.2}
+        onRetry={onRetry}
+        onBack={onBack}
+        onStep={onStep}
+        onReset={onReset}
+      />,
+    );
+    fireEvent.press(screen.getByLabelText("Przywróć oryginalne ilości"));
+    expect(onReset).toHaveBeenCalledTimes(1);
   });
 
   it("renders the not-found state with a working back link", () => {
@@ -57,7 +107,14 @@ describe("RecipeDetailsScreen", () => {
     };
 
     render(
-      <RecipeDetailsScreen state={state} onRetry={onRetry} onBack={onBack} />,
+      <RecipeDetailsScreen
+        state={state}
+        factor={1}
+        onRetry={onRetry}
+        onBack={onBack}
+        onStep={onStep}
+        onReset={onReset}
+      />,
     );
 
     expect(screen.getByText("Nie znaleziono przepisu")).toBeTruthy();
@@ -75,7 +132,14 @@ describe("RecipeDetailsScreen", () => {
     };
 
     render(
-      <RecipeDetailsScreen state={state} onRetry={onRetry} onBack={onBack} />,
+      <RecipeDetailsScreen
+        state={state}
+        factor={1}
+        onRetry={onRetry}
+        onBack={onBack}
+        onStep={onStep}
+        onReset={onReset}
+      />,
     );
 
     expect(

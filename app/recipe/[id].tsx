@@ -10,6 +10,11 @@ import {
   applyDetailsSuccess,
   createInitialDetailsState,
 } from "@/services/recipe-details-state";
+import {
+  RESET_FACTOR,
+  type StepDirection,
+  stepFactor,
+} from "@/services/recipe-scaling";
 import { getRecipeSnapshot } from "@/services/recipe-snapshot-cache";
 import { SearchClientError } from "@/services/search-client";
 
@@ -21,6 +26,7 @@ export default function RecipeDetailsRoute() {
   const [state, setState] = useState(() =>
     createInitialDetailsState(id ? (getRecipeSnapshot(id) ?? null) : null),
   );
+  const [factor, setFactor] = useState(RESET_FACTOR);
 
   const loadDetails = useCallback(async () => {
     if (!id) {
@@ -28,6 +34,7 @@ export default function RecipeDetailsRoute() {
     }
 
     setState((prev) => applyDetailsLoading(prev));
+    setFactor(RESET_FACTOR);
 
     try {
       const details = await fetchRecipeDetails(id);
@@ -50,11 +57,27 @@ export default function RecipeDetailsRoute() {
     void loadDetails();
   }, [loadDetails]);
 
+  const handleStep = useCallback(
+    (ingredientName: string, direction: StepDirection) => {
+      const ingredient = state.details?.ingredients.find(
+        (item) => item.name === ingredientName,
+      );
+      if (!ingredient) {
+        return;
+      }
+      setFactor((current) => stepFactor(ingredient, current, direction));
+    },
+    [state.details],
+  );
+
   return (
     <RecipeDetailsScreen
       state={state}
+      factor={factor}
       onRetry={() => void loadDetails()}
       onBack={() => router.replace("/")}
+      onStep={handleStep}
+      onReset={() => setFactor(RESET_FACTOR)}
     />
   );
 }

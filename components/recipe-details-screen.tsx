@@ -13,23 +13,25 @@ import { SearchErrorState } from "@/components/search-error-state";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
-import type { RecipeDetailsIngredient } from "@/services/recipe-details-client";
 import type { RecipeDetailsUiState } from "@/services/recipe-details-state";
+import { RESET_FACTOR, type StepDirection } from "@/services/recipe-scaling";
 
 type RecipeDetailsScreenProps = {
   state: RecipeDetailsUiState;
+  factor: number;
   onRetry: () => void;
   onBack: () => void;
+  onStep: (ingredientName: string, direction: StepDirection) => void;
+  onReset: () => void;
 };
-
-function snapshotIngredients(names: string[]): RecipeDetailsIngredient[] {
-  return names.map((name) => ({ name, amount: null, unit: null }));
-}
 
 export function RecipeDetailsScreen({
   state,
+  factor,
   onRetry,
   onBack,
+  onStep,
+  onReset,
 }: RecipeDetailsScreenProps) {
   const tint = useThemeColor({}, "tint");
   const icon = useThemeColor({}, "icon");
@@ -76,9 +78,6 @@ export function RecipeDetailsScreen({
   const title = state.details?.title ?? state.snapshot?.title ?? "Przepis";
   const favoritesCount =
     state.details?.favoritesCount ?? state.snapshot?.favoritesCount ?? null;
-  const ingredients =
-    state.details?.ingredients ??
-    (state.snapshot ? snapshotIngredients(state.snapshot.ingredients) : []);
   const isLoading = state.status === "loading";
 
   return (
@@ -101,13 +100,34 @@ export function RecipeDetailsScreen({
             Składniki
           </ThemedText>
           <View>
-            {ingredients.map((ingredient) => (
-              <RecipeIngredientRow
-                key={ingredient.name}
-                ingredient={ingredient}
-              />
-            ))}
+            {state.details
+              ? state.details.ingredients.map((ingredient) => (
+                  <RecipeIngredientRow
+                    key={ingredient.name}
+                    ingredient={ingredient}
+                    factor={factor}
+                    onStep={(direction) => onStep(ingredient.name, direction)}
+                  />
+                ))
+              : (state.snapshot?.ingredients ?? []).map((name) => (
+                  <View key={name} style={styles.snapshotRow}>
+                    <ThemedText>{name}</ThemedText>
+                  </View>
+                ))}
           </View>
+
+          {state.details && factor !== RESET_FACTOR && (
+            <Pressable
+              style={[styles.resetButton, { borderColor: tint }]}
+              onPress={onReset}
+              accessibilityRole="button"
+              accessibilityLabel="Przywróć oryginalne ilości"
+            >
+              <Text style={[styles.resetText, { color: tint }]}>
+                Przywróć oryginalne ilości
+              </Text>
+            </Pressable>
+          )}
 
           {isLoading && (
             <View style={styles.loadingRow}>
@@ -160,6 +180,20 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 14,
+  },
+  snapshotRow: {
+    paddingVertical: 12,
+  },
+  resetButton: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  resetText: {
+    fontWeight: "600",
+    fontSize: 15,
   },
   emptyIcon: {
     fontSize: 56,
