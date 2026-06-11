@@ -1,0 +1,13 @@
+# Cloudflare Pages cache rules (https://developers.cloudflare.com/pages/configuration/headers/)
+# HTML routes are extensionless, so default everything to no-cache and
+# re-enable long-lived caching only for content-hashed build artifacts.
+/*
+  Cache-Control: no-cache
+
+/_expo/static/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
