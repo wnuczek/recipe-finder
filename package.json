@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "web:build": "expo export --platform web && node ./scripts/fix-cloudflare-pages-assets.js",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "server:build": "tsc -p server/tsconfig.json",

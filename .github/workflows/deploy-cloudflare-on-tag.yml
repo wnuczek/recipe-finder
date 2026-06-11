@@ -45,7 +45,7 @@ jobs:
 
       - name: Build web bundle
         if: env.SHOULD_DEPLOY == 'true'
-        run: npx expo export --platform web
+        run: npm run web:build
 
       - name: Validate Cloudflare Pages project variable
         if: env.SHOULD_DEPLOY == 'true'
