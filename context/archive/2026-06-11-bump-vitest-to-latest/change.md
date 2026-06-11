@@ -1,10 +1,10 @@
 ---
 change_id: bump-vitest-to-latest
 title: Bump Vitest to latest version
-status: implemented
+status: archived
 created: 2026-06-11
 updated: 2026-06-11
-archived_at: null
+archived_at: 2026-06-11T11:53:02Z
 ---
 
 ## Notes
