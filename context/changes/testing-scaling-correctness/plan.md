@@ -345,11 +345,11 @@ No production code changes, no schema changes, no data migration. Tests only, pl
 
 #### Automated
 
-- [x] 4.1 Full validate passes: `npm run validate`
-- [x] 4.2 `client:test` / `app:test` output shows new cases executing
+- [x] 4.1 Full validate passes: `npm run validate` — 307e019
+- [x] 4.2 `client:test` / `app:test` output shows new cases executing — 307e019
 
 #### Manual
 
-- [x] 4.3 §6.1 / §6.2 cookbook entries are actionable how-tos
-- [x] 4.4 Absent-guard finding recorded and discoverable
-- [x] 4.5 §3 Phase 1 status set to `complete`
+- [x] 4.3 §6.1 / §6.2 cookbook entries are actionable how-tos — 307e019
+- [x] 4.4 Absent-guard finding recorded and discoverable — 307e019
+- [x] 4.5 §3 Phase 1 status set to `complete` — 307e019

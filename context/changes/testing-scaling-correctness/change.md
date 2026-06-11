@@ -1,7 +1,7 @@
 ---
 change_id: testing-scaling-correctness
 title: Scaling & edit-input correctness (test rollout Phase 1)
-status: implementing
+status: implemented
 created: 2026-06-09
 updated: 2026-06-11
 archived_at: null
