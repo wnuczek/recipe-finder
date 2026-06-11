@@ -152,26 +152,26 @@ None of substance. vitest 4's pool internals were rewritten but the default (`fo
 
 #### Automated
 
-- [x] 1.1 Install resolves cleanly: `npm install`
-- [x] 1.2 Vitest 4.x + Vite ≥6 installed: `npm ls vitest vite`
-- [x] 1.3 Server suite passes: `npm run server:test`
-- [x] 1.4 Client suite passes: `npm run client:test`
-- [x] 1.5 Type checking passes: `npm run typecheck`
-- [x] 1.6 Linting passes: `npm run lint`
-- [x] 1.7 Jest suite still passes: `npm run app:test`
+- [x] 1.1 Install resolves cleanly: `npm install` — 5e7f43c
+- [x] 1.2 Vitest 4.x + Vite ≥6 installed: `npm ls vitest vite` — 5e7f43c
+- [x] 1.3 Server suite passes: `npm run server:test` — 5e7f43c
+- [x] 1.4 Client suite passes: `npm run client:test` — 5e7f43c
+- [x] 1.5 Type checking passes: `npm run typecheck` — 5e7f43c
+- [x] 1.6 Linting passes: `npm run lint` — 5e7f43c
+- [x] 1.7 Jest suite still passes: `npm run app:test` — 5e7f43c
 
 #### Manual
 
-- [x] 1.8 No unhandled-API deprecation/warning noise in Vitest output
-- [x] 1.9 Test counts match pre-bump (nothing silently skipped)
+- [x] 1.8 No unhandled-API deprecation/warning noise in Vitest output — 5e7f43c
+- [x] 1.9 Test counts match pre-bump (nothing silently skipped) — 5e7f43c
 
 ### Phase 2: Align CI to Node LTS
 
 #### Automated
 
-- [ ] 2.1 Workflow YAML is valid
-- [ ] 2.2 No remaining `node-version: 20` reference in the workflow
+- [x] 2.1 Workflow YAML is valid
+- [x] 2.2 No remaining `node-version: 20` reference in the workflow
 
 #### Manual
 
-- [ ] 2.3 Next tag-triggered CI run is green on Node 24 (deferred)
+- [x] 2.3 Next tag-triggered CI run is green on Node 24 (deferred)
