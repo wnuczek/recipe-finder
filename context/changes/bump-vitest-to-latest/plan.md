@@ -169,9 +169,9 @@ None of substance. vitest 4's pool internals were rewritten but the default (`fo
 
 #### Automated
 
-- [x] 2.1 Workflow YAML is valid
-- [x] 2.2 No remaining `node-version: 20` reference in the workflow
+- [x] 2.1 Workflow YAML is valid — d8e4f4c
+- [x] 2.2 No remaining `node-version: 20` reference in the workflow — d8e4f4c
 
 #### Manual
 
-- [x] 2.3 Next tag-triggered CI run is green on Node 24 (deferred)
+- [x] 2.3 Next tag-triggered CI run is green on Node 24 (deferred) — d8e4f4c
