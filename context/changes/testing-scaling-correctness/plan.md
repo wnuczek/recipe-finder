@@ -319,27 +319,27 @@ No production code changes, no schema changes, no data migration. Tests only, pl
 
 #### Automated
 
-- [x] 2.1 Client unit tests pass: `npm run client:test`
-- [x] 2.2 Type checking passes: `npm run typecheck`
-- [x] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Client unit tests pass: `npm run client:test` — 0601909
+- [x] 2.2 Type checking passes: `npm run typecheck` — 0601909
+- [x] 2.3 Lint passes: `npm run lint` — 0601909
 
 #### Manual
 
-- [x] 2.4 Characterization test names make clear they pin current behavior
-- [x] 2.5 Typed-field deferral is obvious from comments / describe text
+- [x] 2.4 Characterization test names make clear they pin current behavior — 0601909
+- [x] 2.5 Typed-field deferral is obvious from comments / describe text — 0601909
 
 ### Phase 3: Component Layer — Fan-Out & Row Resilience
 
 #### Automated
 
-- [ ] 3.1 Component tests pass: `npm run app:test`
-- [ ] 3.2 Type checking passes: `npm run typecheck`
-- [ ] 3.3 Lint passes: `npm run lint`
+- [x] 3.1 Component tests pass: `npm run app:test`
+- [x] 3.2 Type checking passes: `npm run typecheck`
+- [x] 3.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 3.4 Fan-out test spans multiple unit families + a non-scalable row
-- [ ] 3.5 Garbage-amount row test confirms no crash and documents output
+- [x] 3.4 Fan-out test spans multiple unit families + a non-scalable row
+- [x] 3.5 Garbage-amount row test confirms no crash and documents output
 
 ### Phase 4: Wiring & Cookbook
 

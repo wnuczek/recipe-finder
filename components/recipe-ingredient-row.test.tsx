@@ -103,6 +103,36 @@ describe("RecipeIngredientRow", () => {
     expect(onStep).not.toHaveBeenCalled();
   });
 
+  it("stays stable when handed a non-finite (garbage) amount — pins current output", () => {
+    // Risk #2 at the UI: a NaN amount must not crash the row. isScalable(NaN, "g")
+    // is true (NaN !== null), so the row takes the stepper path and renders
+    // formatAmount(NaN) === "NaN" rather than a valid steppable quantity. This
+    // pins CURRENT behavior — there is no finite-amount guard today (see the
+    // characterization tests in services/recipe-scaling.test.ts).
+    expect(() =>
+      render(
+        <RecipeIngredientRow ingredient={ing(NaN, "g")} factor={1} onStep={onStep} />,
+      ),
+    ).not.toThrow();
+
+    // Documents the actual rendered text: the literal string "NaN", not a number.
+    expect(screen.getByText("NaN")).toBeTruthy();
+    // Decrement is disabled because NaN - step > 0 is false — no valid control state.
+    expect(
+      screen.getByLabelText("Zmniejsz makaron").props.accessibilityState.disabled,
+    ).toBe(true);
+  });
+
+  it("renders a fractional scaled value with the Polish comma separator", () => {
+    // Closes the formatAmount → render path at the component layer: 1 kg × 1.5
+    // = 1.5 → 2-decimal rule → "1,5". Asserts the comma, not a dot.
+    render(
+      <RecipeIngredientRow ingredient={ing(1, "kg")} factor={1.5} onStep={onStep} />,
+    );
+
+    expect(screen.getByText("1,5")).toBeTruthy();
+  });
+
   it("renders a non-scalable ingredient without controls", () => {
     render(
       <RecipeIngredientRow
