@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-11 (Phase 1 implementing)
+> Last updated: 2026-06-11 (Phase 1 complete)
 
 ## 1. Strategy
 
@@ -79,7 +79,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | Scaling & edit-input correctness | Prove a quantity edit recalculates every ingredient correctly and rejects bad input | #1, #2 | unit + component | implementing | context/changes/testing-scaling-correctness/ |
+| 1 | Scaling & edit-input correctness | Prove a quantity edit recalculates every ingredient correctly and rejects bad input | #1, #2 | unit + component | complete | context/changes/testing-scaling-correctness/ |
 | 2 | Search & data-layer integrity | Catch regressions in the churn-heavy repository, ranking, and search route | #3, #4 | integration | not started | — |
 | 3 | End-to-end contract & input validation | Prove the full search→details→scale flow holds and the API rejects bad input | #5, #6 | contract / integration | not started | — |
 | 4 | Quality-gates wiring | Lock the floor in CI and add a perf-guardrail smoke | cross-cutting | gates | not started | — |
@@ -139,11 +139,19 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test (scaling / matching logic)
 
-- TBD — see §3 Phase 1 (scaling recalculation correctness + edit-input rejection pattern). Reference candidates today: `services/recipe-scaling.test.ts`, `services/ingredient-match.test.ts`.
+- **Location & runner**: `services/<module>.test.ts`, Vitest. Run with `npm run client:test`.
+- **Registration (load-bearing)**: `client:test` runs an explicit file list, not a glob — a *new* `*.test.ts` file silently never runs until you add its path to `scripts.client:test` in `package.json`. Verify the file's test count appears in the run output.
+- **Naming & helpers**: group with `describe("<behavior>")` / `it("<observable outcome>")`. Reuse the local `ing(amount, unit, name)` fixture helper; use `toBeCloseTo(…, 10)` for factor float comparisons.
+- **Oracle independence (the rule that makes scaling tests meaningful)**: never lift an expected value by calling the module under test (`displayedAmount` / `stepFactor` / `UNIT_RULES`). Compute each expectation **by hand** against the unit's rounding rule (`g`/`ml` → whole, `kg`/`l` → 2 dp, `szt`/kitchen → nearest 0.25). A test that derives the factor via `stepFactor` and feeds it back through `displayedAmount` proves nothing.
+- **Reference test**: `services/recipe-scaling.test.ts` → `describe("a shared factor recalculates every ingredient independently")` — the multi-ingredient cross-check that pins risk #1: one shared factor applied across a heterogeneous list, each row verified against an independent literal. For characterization of out-of-contract input, see `describe("characterizes behavior on non-finite input (no guard today)")` and name such tests so they read as *pinning current behavior*, not asserting a guard.
 
 ### 6.2 Adding a component test (app / components)
 
-- TBD — see §3 Phase 1 (edit-field parse/validation pattern). Reference candidates today: `components/recipe-ingredient-row.test.tsx`, `components/recipe-details-screen.test.tsx`.
+- **Location & runner**: `components/<component>.test.tsx`, Jest + `jest-expo` + `@testing-library/react-native`. Run with `npm run app:test`.
+- **Registration (load-bearing)**: like `client:test`, `app:test` lists files explicitly — add a new `*.test.tsx` path to `scripts.app:test` in `package.json` or it never runs.
+- **Render & query pattern**: render the controlled component at a chosen prop value (e.g. a non-1 `factor`) and assert with `screen.getByText(...)` against a **hand-computed** literal; use `getByLabelText` for stepper controls. Mock theme plumbing the way the existing files do — `jest.mock("@/hooks/use-theme-color", …)`. The screen is controlled (`factor` is a prop), so no Expo Router is needed.
+- **Fan-out reference**: `components/recipe-details-screen.test.tsx` → `it("fans one factor out to every row, each unit rounded in its own rule")` — renders a heterogeneous ingredient list (`g`/`kg`/`szt` + a non-scalable `null/null` "do smaku" row) at one factor and asserts each scaled amount independently. This is risk #1 at the UI layer.
+- **Garbage-input resilience pattern**: feed a non-finite `amount` and assert the component does not crash and renders no misleading control state — see `components/recipe-ingredient-row.test.tsx` → `it("stays stable when handed a non-finite (garbage) amount — pins current output")` and the Polish-comma render case `it("renders a fractional scaled value with the Polish comma separator")`. Pin current output; do not assert a guard that does not exist (see §6.6 / lessons.md).
 
 ### 6.3 Adding an integration test (repository / ranking)
 
@@ -160,6 +168,8 @@ the relevant rollout phase ships; before that, the sub-section reads
 ### 6.6 Per-rollout-phase notes
 
 (Optional. After each phase lands, `/10x-implement` appends a 2–3 line note here capturing anything surprising the rollout phase taught.)
+
+- **Phase 1 — Scaling & edit-input correctness** (`testing-scaling-correctness`, 2026-06-11): risk #2's typed-field framing did not match the code (steppers only, no free-text field), so it was re-scoped to the engine's data-contract boundary and the tests *characterize* current behavior (NaN/Infinity propagate; increment is unbounded) rather than assert a guard — the absent-guard gap is recorded in `lessons.md` for a follow-up change. Also found: `npm run validate` was the first gate to run `server:lint`, which tripped on a stale git-ignored `server/dist/` build artifact because the eslint ignore was `dist/*` (root-only); widened to `**/dist/*`.
 
 ## 7. What We Deliberately Don't Test
 

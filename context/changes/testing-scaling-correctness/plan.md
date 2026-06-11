@@ -332,24 +332,24 @@ No production code changes, no schema changes, no data migration. Tests only, pl
 
 #### Automated
 
-- [x] 3.1 Component tests pass: `npm run app:test`
-- [x] 3.2 Type checking passes: `npm run typecheck`
-- [x] 3.3 Lint passes: `npm run lint`
+- [x] 3.1 Component tests pass: `npm run app:test` — e814a32
+- [x] 3.2 Type checking passes: `npm run typecheck` — e814a32
+- [x] 3.3 Lint passes: `npm run lint` — e814a32
 
 #### Manual
 
-- [x] 3.4 Fan-out test spans multiple unit families + a non-scalable row
-- [x] 3.5 Garbage-amount row test confirms no crash and documents output
+- [x] 3.4 Fan-out test spans multiple unit families + a non-scalable row — e814a32
+- [x] 3.5 Garbage-amount row test confirms no crash and documents output — e814a32
 
 ### Phase 4: Wiring & Cookbook
 
 #### Automated
 
-- [ ] 4.1 Full validate passes: `npm run validate`
-- [ ] 4.2 `client:test` / `app:test` output shows new cases executing
+- [x] 4.1 Full validate passes: `npm run validate`
+- [x] 4.2 `client:test` / `app:test` output shows new cases executing
 
 #### Manual
 
-- [ ] 4.3 §6.1 / §6.2 cookbook entries are actionable how-tos
-- [ ] 4.4 Absent-guard finding recorded and discoverable
-- [ ] 4.5 §3 Phase 1 status set to `complete`
+- [x] 4.3 §6.1 / §6.2 cookbook entries are actionable how-tos
+- [x] 4.4 Absent-guard finding recorded and discoverable
+- [x] 4.5 §3 Phase 1 status set to `complete`
