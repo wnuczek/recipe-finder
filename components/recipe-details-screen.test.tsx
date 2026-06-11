@@ -40,7 +40,7 @@ describe("RecipeDetailsScreen", () => {
       errorMessage: null,
     };
 
-    const view = render(
+    render(
       <RecipeDetailsScreen
         state={state}
         factor={1}
@@ -51,12 +51,10 @@ describe("RecipeDetailsScreen", () => {
       />,
     );
 
-    const snapshot = JSON.stringify(view.toJSON());
-    expect(snapshot).toContain("Kurczak curry z ryżem");
-    expect(snapshot).toContain("500");
-    expect(snapshot).toContain("do smaku");
-    expect(snapshot).toContain("Ulubione: ");
-    expect(snapshot).toContain("42");
+    expect(screen.getByText("Kurczak curry z ryżem")).toBeTruthy();
+    expect(screen.getByText("500")).toBeTruthy();
+    expect(screen.getByText("do smaku · nie skaluje się")).toBeTruthy();
+    expect(screen.getByText("Ulubione: 42")).toBeTruthy();
   });
 
   it("steps an ingredient and shows reset when scaled", () => {
