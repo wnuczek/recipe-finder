@@ -182,3 +182,53 @@ describe("formatAmount uses a Polish comma separator without trailing zeros", ()
     expect(formatAmount(12345.5)).toBe("12345,5");
   });
 });
+
+// CHARACTERIZATION TESTS — these document the engine's CURRENT behavior at its
+// data-trust boundary. They do NOT assert that a guard exists or should exist.
+// The engine has no `Number.isFinite` guard today (see recipe-scaling.ts:74,95);
+// the open policy question (guard vs. trust upstream invariant) is recorded as a
+// Phase 4 finding / lessons entry. If a future change adds a guard, these tests
+// are EXPECTED to change — they pin the before-state, not desired behavior.
+describe("characterizes behavior on non-finite input (no guard today)", () => {
+  it("propagates NaN through displayedAmount for a NaN amount (no guard today)", () => {
+    // Math.round(NaN * factor) === NaN; nothing short-circuits a non-finite amount.
+    expect(Number.isNaN(displayedAmount(ing(NaN, "g"), 2))).toBe(true);
+  });
+
+  it("propagates Infinity through displayedAmount for an Infinite amount (no guard today)", () => {
+    // Math.round(Infinity * 2) === Infinity.
+    expect(displayedAmount(ing(Infinity, "g"), 2)).toBe(Infinity);
+  });
+
+  it("yields NaN from stepFactor on a NaN amount (no guard today)", () => {
+    // amount === 0 is the ONLY divide-by-zero short-circuit; NaN !== 0, so it
+    // flows through: NaN / NaN === NaN.
+    expect(Number.isNaN(stepFactor(ing(NaN, "g"), 1, "increment"))).toBe(true);
+  });
+
+  it("yields NaN from stepFactor on an Infinite amount (no guard today)", () => {
+    // current = Infinity, nextAmount = Infinity + 10 = Infinity, Infinity / Infinity === NaN.
+    expect(Number.isNaN(stepFactor(ing(Infinity, "g"), 1, "increment"))).toBe(true);
+  });
+
+  it("propagates NaN for a mistyped (non-number) amount (no guard today)", () => {
+    // RecipeDetailsIngredient.amount is typed `number | null`; a wrong-typed value
+    // (e.g. a string that slipped past a contract boundary) needs a localized cast.
+    // The arithmetic coerces "abc" to NaN, which then propagates unguarded.
+    const mistyped = ing("abc" as unknown as number, "g");
+    expect(Number.isNaN(displayedAmount(mistyped, 2))).toBe(true);
+  });
+});
+
+describe("documents the unbounded increment (no ceiling today)", () => {
+  it("always allows increment regardless of how large the amount already is (no ceiling today)", () => {
+    // canStep returns true for increment unconditionally (recipe-scaling.ts:95-96).
+    // A future increment-ceiling guard would change this — see the Phase 4 finding.
+    expect(canStep(ing(1_000_000, "g"), 1000, "increment")).toBe(true);
+  });
+
+  it("grows displayedAmount without bound under a large factor (no ceiling today)", () => {
+    // 1_000_000 g × 1000 = 1_000_000_000 → whole. No upper clamp.
+    expect(displayedAmount(ing(1_000_000, "g"), 1000)).toBe(1_000_000_000);
+  });
+});

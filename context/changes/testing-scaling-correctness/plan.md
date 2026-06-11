@@ -305,28 +305,28 @@ No production code changes, no schema changes, no data migration. Tests only, pl
 
 #### Automated
 
-- [x] 1.1 Client unit tests pass: `npm run client:test`
-- [x] 1.2 Type checking passes: `npm run typecheck`
-- [x] 1.3 Lint passes: `npm run lint`
-- [x] 1.4 Every `UNIT_RULES` key (incl. `łyżeczka`, `l`) exercised
+- [x] 1.1 Client unit tests pass: `npm run client:test` — e0fe184
+- [x] 1.2 Type checking passes: `npm run typecheck` — e0fe184
+- [x] 1.3 Lint passes: `npm run lint` — e0fe184
+- [x] 1.4 Every `UNIT_RULES` key (incl. `łyżeczka`, `l`) exercised — e0fe184
 
 #### Manual
 
-- [x] 1.5 Oracle independence holds (no expected value lifted from the module)
-- [x] 1.6 Multi-ingredient cross-check reads as the risk-#1 scenario
+- [x] 1.5 Oracle independence holds (no expected value lifted from the module) — e0fe184
+- [x] 1.6 Multi-ingredient cross-check reads as the risk-#1 scenario — e0fe184
 
 ### Phase 2: Risk #2 (Reframed) — Data-Contract Characterization
 
 #### Automated
 
-- [ ] 2.1 Client unit tests pass: `npm run client:test`
-- [ ] 2.2 Type checking passes: `npm run typecheck`
-- [ ] 2.3 Lint passes: `npm run lint`
+- [x] 2.1 Client unit tests pass: `npm run client:test`
+- [x] 2.2 Type checking passes: `npm run typecheck`
+- [x] 2.3 Lint passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.4 Characterization test names make clear they pin current behavior
-- [ ] 2.5 Typed-field deferral is obvious from comments / describe text
+- [x] 2.4 Characterization test names make clear they pin current behavior
+- [x] 2.5 Typed-field deferral is obvious from comments / describe text
 
 ### Phase 3: Component Layer — Fan-Out & Row Resilience
 
